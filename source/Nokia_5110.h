@@ -21,6 +21,8 @@
 
 #define LCD_WIDTH 84
 #define LCD_HEIGHT 48
+#define LCD_ROWS 6
+#define LCD_BYTES 504
 
 #define LCD_POWERDOWN 0x04
 #define LCD_ENTRYMODE 0x02
@@ -57,9 +59,10 @@ class Nokia_5110 {
         void setMode(uint8_t mode);
         void setPower(uint8_t pow);
 
+        void setXAddr(uint8_t x);
+        void setYAddr(uint8_t y);
         void setCursor(uint8_t x, uint8_t y);
 
-        void clearDisplay();
         void clearBuffer();
         void display();
 
