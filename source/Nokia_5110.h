@@ -60,14 +60,20 @@ class Nokia_5110 {
         void setPower(uint8_t pow);
 
         void setXAddr(uint8_t x);
-        void setYAddr(uint8_t y);
-        void setCursor(uint8_t x, uint8_t y);
+        void setYAddr(uint8_t row);
+        void setCursor(uint8_t x, uint8_t row);
 
         void clearBuffer();
         void display();
 
         void drawPixel(uint8_t x, uint8_t y, uint8_t value);
         uint8_t getPixel(uint8_t x, uint8_t y);
+
+        void drawByte(uint8_t x, uint8_t row, uint8_t byte);
+        uint8_t getByte(uint8_t x, uint8_t row);
+
+        void printChar(char c, uint8_t x, uint8_t row);
+        void printString(const char* str, uint8_t x, uint8_t row);
 
     private:
         SPI* _lcdSPI;
