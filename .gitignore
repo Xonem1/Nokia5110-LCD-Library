@@ -44,3 +44,5 @@ yotta_modules
 yotta_targets
 build
 .yotta.json
+
+upload.tar.gz
