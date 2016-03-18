@@ -21,7 +21,7 @@
 
 #define LCD_WIDTH 84
 #define LCD_HEIGHT 48
-#define LCD_ROWS 6
+#define LCD_BANKS 6
 #define LCD_BYTES 504
 
 #define LCD_POWERDOWN 0x04
@@ -73,7 +73,7 @@ class Nokia_5110 {
         uint8_t getByte(uint8_t x, uint8_t row);
 
         void printChar(char c, uint8_t x, uint8_t row);
-        void printString(char* str, uint8_t x, uint8_t row);
+        void printString(const char* str, uint8_t x, uint8_t row);
 
     private:
         SPI* _lcdSPI;

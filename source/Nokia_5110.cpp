@@ -77,14 +77,14 @@ void Nokia_5110::setXAddr(uint8_t col) {
     sendCommand(LCD_SETXADDR | col);
 }
 
-void Nokia_5110::setYAddr(uint8_t row) {
-    row %= LCD_ROWS;
-    sendCommand(LCD_SETYADDR | row);
+void Nokia_5110::setYAddr(uint8_t bank) {
+    bank %= LCD_BANKS;
+    sendCommand(LCD_SETYADDR | bank);
 }
 
-void Nokia_5110::setCursor(uint8_t col, uint8_t row) {
+void Nokia_5110::setCursor(uint8_t col, uint8_t bank) {
     setXAddr(col);
-    setYAddr(row);
+    setYAddr(bank);
 }
 
 void Nokia_5110::clearBuffer() {
@@ -101,50 +101,58 @@ void Nokia_5110::display() {
     }
 }
 
-void Nokia_5110::drawPixel(uint8_t col, uint8_t y, uint8_t value) {
+void Nokia_5110::drawPixel(uint8_t col, uint8_t row, uint8_t value) {
     col %= LCD_WIDTH;
-    y %= LCD_HEIGHT;
-    if (value) 
-        buffer[col + (y / 8) * LCD_WIDTH] |= (1 << (y % 8));  
+    row %= LCD_HEIGHT;
+    if (value != 0) 
+        buffer[col + (row / 8) * LCD_WIDTH] |= (1 << (row % 8));  
     else
-        buffer[col + (y / 8) * LCD_WIDTH] &= (1 << (y % 8)); 
+        buffer[col + (row / 8) * LCD_WIDTH] &= ~(1 << (row % 8)); 
 }
 
-uint8_t Nokia_5110::getPixel(uint8_t col, uint8_t y) {
+uint8_t Nokia_5110::getPixel(uint8_t col, uint8_t row) {
     col %= LCD_WIDTH;
-    y %= LCD_HEIGHT;
+    row %= LCD_HEIGHT;
 
-    return buffer[col + (y / 8) * LCD_WIDTH] & (1 << (y % 8));
+    return buffer[col + (row / 8) * LCD_WIDTH] & (1 << (row % 8));
 }
 
-void Nokia_5110::drawByte(uint8_t col, uint8_t row, uint8_t byte) {
+void Nokia_5110::drawByte(uint8_t col, uint8_t bank, uint8_t byte) {
     col %= LCD_WIDTH;
-    row %= LCD_ROWS;
+    bank %= LCD_BANKS;
 
-    buffer[col + row * LCD_WIDTH] = byte;
+    buffer[col + bank * LCD_WIDTH] = byte;
 }
 
-uint8_t Nokia_5110::getByte(uint8_t col, uint8_t y) {
+uint8_t Nokia_5110::getByte(uint8_t col, uint8_t bank) {
     col %= LCD_WIDTH;
-    y %= LCD_ROWS;
+    bank %= LCD_BANKS;
 
-    return buffer[col + y * LCD_WIDTH];
+    return buffer[col + bank * LCD_WIDTH];
 }
 
 void Nokia_5110::printChar(char c, uint8_t col, uint8_t row) {
     col %= LCD_WIDTH;
-    row %= LCD_ROWS;
+    row %= LCD_HEIGHT;
 
     c -= 32;
-    for (unsigned int i = 0; i < 5; i++) {
-        drawByte(col, row, font[(5 * c) + i]);
-        col++;
+
+    if (!(row % 8)) {
+        for (unsigned int i = 0; i < 5; i++) {
+            drawByte(col + i, row / 8, font[(5 * c) + i]);
+        }
+    } else {
+        for (unsigned int i = 0; i < 5; i++) {
+            for (unsigned int b = 0; b < 8; b++) {
+                drawPixel(col + i, row + b, font[(5 * c) + i] & (1 << b));
+            }
+        }
     }
 }
 
-void Nokia_5110::printString(char* str, uint8_t col, uint8_t row) {
+void Nokia_5110::printString(const char* str, uint8_t col, uint8_t row) {
     col %= LCD_WIDTH;
-    row %= LCD_ROWS;
+    row %= LCD_HEIGHT;
 
     while (*str && col + 6 < LCD_WIDTH) {
         printChar(*str, col, row);
