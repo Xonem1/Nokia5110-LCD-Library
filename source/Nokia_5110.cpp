@@ -142,7 +142,7 @@ void Nokia_5110::printChar(char c, uint8_t col, uint8_t row) {
     }
 }
 
-void Nokia_5110::printString(const char* str, uint8_t col, uint8_t row) {
+void Nokia_5110::printString(char* str, uint8_t col, uint8_t row) {
     col %= LCD_WIDTH;
     row %= LCD_ROWS;
 

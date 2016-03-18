@@ -73,7 +73,7 @@ class Nokia_5110 {
         uint8_t getByte(uint8_t x, uint8_t row);
 
         void printChar(char c, uint8_t x, uint8_t row);
-        void printString(const char* str, uint8_t x, uint8_t row);
+        void printString(char* str, uint8_t x, uint8_t row);
 
     private:
         SPI* _lcdSPI;

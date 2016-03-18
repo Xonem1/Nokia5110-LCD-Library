@@ -1,6 +1,6 @@
 {
   "name": "nokia-5110-lcd",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "nokia 5110/3310 lcd driver for mbed OS",
   "keywords": [
     "mbed",
