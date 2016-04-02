@@ -189,14 +189,14 @@ class Nokia_5110 {
          * @param col x coordinate of upper left (0-83)
          * @param row y coordinate of upper left (0-47)
          */
-        void printChar(char c, uint8_t x, uint8_t row);
+        void printChar(char c, uint8_t col, uint8_t row);
 
         /**
          * @brief prints a string to the screen buffer
          * 
          * @param str string to print
          * @param col x coordinate of upper left (0-83)
-         * @param row y coordinate of upper left (0-57)
+         * @param row y coordinate of upper left (0-47)
          */
         void printString(const char* str, uint8_t col, uint8_t row);
 
