@@ -5,6 +5,6 @@ void app_start(int, char *[]) {
     lcd.init(40, 4);
     lcd.clearBuffer();
     lcd.printString("Hello", 0, 0);
-    lcd.printString("World!", 0, 1);
+    lcd.printString("World!", 3, 9);
     lcd.display();
 }
