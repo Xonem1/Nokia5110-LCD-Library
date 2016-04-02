@@ -46,34 +46,159 @@
 
 class Nokia_5110 {
     public:
+        /**
+         * @brief constructor
+         * 
+         * @param sce Chip Enable pin
+         * @param rst Reset pin
+         * @param dc D/C pin
+         * @param dn data pin (MOSI)
+         * @param sclk clock pin (SCLK)
+         */
         Nokia_5110(PinName sce, PinName rst, PinName dc, PinName dn, PinName sclk);
 
+        /**
+         * @brief initialize the display with given contrast and bias.
+         *
+         * @param con contrast for the display
+         * @param bias bias for the display, should be 0x04 for the nokia 5110 display. only change for other PCD8544 displays
+         */
         void init(uint8_t con = 40, uint8_t bias = 0x04);
+
+        /**
+         * @brief reset the display's memory
+         */
         void reset();
 
+        /**
+         * @brief send a command to the display
+         * 
+         * @param cmd command to send
+         */
         void sendCommand(uint8_t cmd);
+
+        /**
+         * @brief send a byte of data to the display
+         * 
+         * @param data data to send
+         */
         void sendData(uint8_t data);
 
+        /**
+         * @brief sets the display's contrast
+         * 
+         * @param con contrast, usually between 40 and 60 depending on your display
+         */
         void setContrast(uint8_t con);
+
+        /**
+         * @brief sets the dispay's bias
+         * 
+         * @param bias bias, should be 0x4 for the Nokia 5110 display
+         */
         void setBias(uint8_t bias);
+
+        /**
+         * @brief sets the display's display mode
+         * 
+         * @param mode display mode (Blank, inverted, allon or normal)
+         */
         void setMode(uint8_t mode);
+
+        /**
+         * @brief turns the display on or off
+         * 
+         * @param pow power, 0 = off, 1 = on
+         */
         void setPower(uint8_t pow);
 
-        void setXAddr(uint8_t x);
-        void setYAddr(uint8_t row);
-        void setCursor(uint8_t x, uint8_t row);
+        /**
+         * @brief sets the X value of the cursor
+         * 
+         * @param col x coordinate (0-83)
+         */
+        void setXAddr(uint8_t col);
 
+        /**
+         * @brief sets the Y value of the cursor
+         * 
+         * @param bank memory bank (0-5)
+         */
+        void setYAddr(uint8_t bank);
+
+        /**
+         * @brief sets the X and Y values of the cursor
+         * 
+         * @param col x coordinate (0-83)
+         * @param bank memory bank (0-5)
+         */
+        void setCursor(uint8_t col, uint8_t bank);
+
+        /**
+         * @brief clears the screen buffer
+         */
         void clearBuffer();
+
+        /**
+         * @brief sends the screen buffer to the display
+         */
         void display();
 
-        void drawPixel(uint8_t x, uint8_t y, uint8_t value);
-        uint8_t getPixel(uint8_t x, uint8_t y);
+        /**
+         * @brief draws a pixel to the screen buffer 
+         * 
+         * @param col x coordinate (0-83)
+         * @param row y coordinate (0-47)
+         * @param value pixel value. 0 = white, 1 = black in normal mode
+         */
+        void drawPixel(uint8_t col, uint8_t row, uint8_t value);
 
-        void drawByte(uint8_t x, uint8_t row, uint8_t byte);
-        uint8_t getByte(uint8_t x, uint8_t row);
+        /**
+         * @brief gets the value of a pixel from the screen buffer
+         * 
+         * @param col x coordinate (0-83)
+         * @param row y coordinate (0-47)
+         * 
+         * @return value of the pixel, 0 if white
+         */
+        uint8_t getPixel(uint8_t col, uint8_t bank);
 
+        /**
+         * @brief draws a byte to the screen buffer
+         * 
+         * @param col x coordinate, (0-83)
+         * @param bank memory bank (0-5)
+         * @param byte byte to draw
+         */
+        void drawByte(uint8_t col, uint8_t bank, uint8_t byte);
+
+        /**
+         * @brief gets a byte from the screen buffer
+         * 
+         * @param col x coordinate (0-83)
+         * @param bank memory bank (0-5)
+         * 
+         * @return byte from the screen buffer
+         */
+        uint8_t getByte(uint8_t col, uint8_t row);
+
+        /**
+         * @brief prints a 7x5 character to the screen buffer
+         * 
+         * @param c character to draw
+         * @param col x coordinate of upper left (0-83)
+         * @param row y coordinate of upper left (0-47)
+         */
         void printChar(char c, uint8_t x, uint8_t row);
-        void printString(const char* str, uint8_t x, uint8_t row);
+
+        /**
+         * @brief prints a string to the screen buffer
+         * 
+         * @param str string to print
+         * @param col x coordinate of upper left (0-83)
+         * @param row y coordinate of upper left (0-57)
+         */
+        void printString(const char* str, uint8_t col, uint8_t row);
 
     private:
         SPI* _lcdSPI;
