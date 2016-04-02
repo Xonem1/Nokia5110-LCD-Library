@@ -9,8 +9,8 @@ env:
   
 before_install:
   - sudo apt-get update && sudo apt-get install python-setuptools cmake build-essential ninja-build python-dev libffi-dev libssl-dev && sudo easy_install pip
-  - pip install --upgrade pip
-  - pip install yotta
+  - sudo pip install --upgrade pip
+  - sudo pip install yotta
 
 install:
   - yotta target $TARGET
