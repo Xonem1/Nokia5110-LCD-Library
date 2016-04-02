@@ -46,3 +46,6 @@ build
 .yotta.json
 
 upload.tar.gz
+
+## Doxygen
+html
