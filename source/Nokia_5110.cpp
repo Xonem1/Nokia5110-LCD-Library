@@ -101,13 +101,30 @@ void Nokia_5110::display() {
     }
 }
 
-void Nokia_5110::drawPixel(uint8_t col, uint8_t row, uint8_t value) {
+void Nokia_5110::drawPixel(uint8_t col, uint8_t row, uint8_t value, DrawMode mode) {
     col %= LCD_WIDTH;
     row %= LCD_HEIGHT;
-    if (value != 0) 
-        buffer[col + (row / 8) * LCD_WIDTH] |= (1 << (row % 8));  
-    else
-        buffer[col + (row / 8) * LCD_WIDTH] &= ~(1 << (row % 8)); 
+    switch (mode) {
+        case pixel_set: 
+            if (value) 
+                buffer[col + (row / 8) * LCD_WIDTH] |= (1 << (row % 8));  
+            else 
+                buffer[col + (row / 8) * LCD_WIDTH] &= ~(1 << (row % 8)); 
+            break;
+        case pixel_or:
+            if (value)
+                buffer[col + (row / 8) * LCD_WIDTH] |= (1 << (row % 8));  
+            break;
+        case pixel_xor:
+            if (value)
+                buffer[col + (row / 8) * LCD_WIDTH] ^= (1 << (row % 8));  
+            break;
+        case pixel_clear:
+            if (value)
+                buffer[col + (row / 8) * LCD_WIDTH] &= ~(1 << (row % 8));  
+            break;
+    }
+
 }
 
 uint8_t Nokia_5110::getPixel(uint8_t col, uint8_t row) {
@@ -131,32 +148,62 @@ uint8_t Nokia_5110::getByte(uint8_t col, uint8_t bank) {
     return buffer[col + bank * LCD_WIDTH];
 }
 
-void Nokia_5110::printChar(char c, uint8_t col, uint8_t row) {
+void Nokia_5110::printChar(char c, uint8_t col, uint8_t row, DrawMode mode) {
     col %= LCD_WIDTH;
     row %= LCD_HEIGHT;
 
     c -= 32;
 
-    if (!(row % 8)) {
-        for (unsigned int i = 0; i < 5; i++) {
-            drawByte(col + i, row / 8, font[(5 * c) + i]);
-        }
-    } else {
-        for (unsigned int i = 0; i < 5; i++) {
-            for (unsigned int b = 0; b < 8; b++) {
-                drawPixel(col + i, row + b, font[(5 * c) + i] & (1 << b));
-            }
+    for (unsigned int i = 0; i < 5; i++) {
+        for (unsigned int b = 0; b < 8; b++) {
+            drawPixel(col + i, row + b, font[(5 * c) + i] & (1 << b), mode);
         }
     }
 }
 
-void Nokia_5110::printString(const char* str, uint8_t col, uint8_t row) {
+void Nokia_5110::printString(const char* str, uint8_t col, uint8_t row, DrawMode mode) {
     col %= LCD_WIDTH;
     row %= LCD_HEIGHT;
 
     while (*str && col + 6 < LCD_WIDTH) {
-        printChar(*str, col, row);
+        printChar(*str, col, row, mode);
         col += 6;
         str++;
     }
+}
+
+void Nokia_5110::drawBitmap(const uint8_t* bmp, uint8_t col, uint8_t row, uint8_t width, uint8_t height, bmp_options_t options, DrawMode mode) {
+    uint8_t mask = 0x80;
+    uint8_t value;
+    uint8_t x2;
+    uint8_t y2;
+    for (uint8_t y = 0; y < height; y++) {
+        for (uint8_t x = 0; x < width; x++) {
+            value = ((*bmp & mask) ? 1 : 0) ^ options.invert;
+            x2 = options.mirrorX ? width  - x : x;
+            y2 = options.mirrorY ? height - y : y;
+
+            switch (options.rotation) {
+                case 0: 
+                    drawPixel(col + x2, row + y2, value, mode);
+                    break;
+                case 1: 
+                    drawPixel(col + height - y2, row + x2, value, mode);
+                    break;
+                case 2: 
+                    drawPixel(col + height - x2, row + height - y2, value, mode);
+                    break;
+                case 3: 
+                    drawPixel(col + y2, row + height - x2, value, mode);
+                    break;
+            }
+
+            mask >>= 1;
+            if (mask == 0) {
+                mask = 0x80;
+                bmp++;
+            }
+        }
+    } 
+
 }

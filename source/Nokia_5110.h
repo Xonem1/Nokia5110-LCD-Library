@@ -44,6 +44,35 @@
 #define LCD_SETBIAS 0x10
 #define LCD_SETVOP 0x80
 
+/**
+ * @brief Mode for drawing pixels
+ */
+enum DrawMode {
+    pixel_set,
+    pixel_or,
+    pixel_xor,
+    pixel_clear
+};
+
+/**
+ * @brief Bitmap draw options
+ */
+struct bmp_options_t {
+    uint8_t rotation    : 2; /** < rotation of the bitmap in 90° increments, clockwise */
+    uint8_t mirrorX     : 1; /** < mirror on the x-axis */
+    uint8_t mirrorY     : 1; /** < mirror on the y-axis */
+    uint8_t invert      : 1; /** < invert the bitmap's colors */
+};
+
+/**
+ * @brief An API for using the Nokia 5110 display or other PCD8544-based displays with mbed-os
+ * @details The Nokia 5110 display is a 84x48 pixel single-bit LCD using the PCD8544 controller.
+ *  It is controlled by a modified version of the SPI protocol. 
+ *  
+ *  If the API or test files dont work at first, try changing the contrast setting. Different units
+ *   will work best at different values. I've had this value range from 40 to 80
+ * 
+ */
 class Nokia_5110 {
     public:
         /**
@@ -150,8 +179,9 @@ class Nokia_5110 {
          * @param col x coordinate (0-83)
          * @param row y coordinate (0-47)
          * @param value pixel value. 0 = white, 1 = black in normal mode
+         * @param mode  draw mode (see above)
          */
-        void drawPixel(uint8_t col, uint8_t row, uint8_t value);
+        void drawPixel(uint8_t col, uint8_t row, uint8_t value, DrawMode mode = pixel_set);
 
         /**
          * @brief gets the value of a pixel from the screen buffer
@@ -188,8 +218,9 @@ class Nokia_5110 {
          * @param c character to draw
          * @param col x coordinate of upper left (0-83)
          * @param row y coordinate of upper left (0-47)
+         * @param mode  draw mode (see above)
          */
-        void printChar(char c, uint8_t col, uint8_t row);
+        void printChar(char c, uint8_t col, uint8_t row, DrawMode mode = pixel_set);
 
         /**
          * @brief prints a string to the screen buffer
@@ -197,8 +228,21 @@ class Nokia_5110 {
          * @param str string to print
          * @param col x coordinate of upper left (0-83)
          * @param row y coordinate of upper left (0-47)
+         * @param mode  draw mode (see above)
          */
-        void printString(const char* str, uint8_t col, uint8_t row);
+        void printString(const char* str, uint8_t col, uint8_t row, DrawMode mode = pixel_set);
+
+        /**
+         * @brief draws a bitmap to the screen buffer
+         *
+         * @param bmp pointer to the start of the bitmap
+         * @param col x coordinate of upper left (0-83)
+         * @param row y coordinate of upper left (0-47)
+         * @param width bitmap width in pixels
+         * @param height bitmap height in pixels
+         * @param options draw options 
+         */
+        void drawBitmap(const uint8_t* bmp, uint8_t col, uint8_t row, uint8_t width, uint8_t height, bmp_options_t options, DrawMode mode = pixel_set);
 
     private:
         SPI* _lcdSPI;
