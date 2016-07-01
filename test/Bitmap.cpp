@@ -19,16 +19,8 @@ uint8_t dog1[51] = {
     0x64, 0x11, 0x80,
     0x40, 0x01, 0x00
 };
-/*
-static void heartbeat(void) {
-    static DigitalOut led(LED1);
-    led = !led;
-    printf("LED = %d \r\n",led.read());
-}
-*/
 
 void app_start(int, char *[]) {
-    //minar::Scheduler::postCallback(heartbeat).period(minar::milliseconds(500));
     Nokia_5110 lcd(NC, D0, D1, D2, D3);
     lcd.init(0x40, 4);
     lcd.clearBuffer();
