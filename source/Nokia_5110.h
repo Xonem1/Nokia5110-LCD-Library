@@ -55,6 +55,18 @@ enum DrawMode {
 };
 
 /**
+ * @brief Mode for filling shapes
+ */
+enum FillMode {
+    solid,
+    none,
+    hatch,
+    checkerboard,
+    stripes_horiz,
+    stripes_vert
+};
+
+/**
  * @brief Bitmap draw options
  */
 struct bmp_options_t {
@@ -179,9 +191,9 @@ class Nokia_5110 {
          * @param col x coordinate (0-83)
          * @param row y coordinate (0-47)
          * @param value pixel value. 0 = white, 1 = black in normal mode
-         * @param mode  draw mode (see above)
+         * @param drawMode  draw mode (see above)
          */
-        void drawPixel(uint8_t col, uint8_t row, uint8_t value, DrawMode mode = pixel_set);
+        void drawPixel(uint8_t col, uint8_t row, uint8_t value, DrawMode drawMode = pixel_set);
 
         /**
          * @brief gets the value of a pixel from the screen buffer
@@ -244,13 +256,25 @@ class Nokia_5110 {
          */
         void drawBitmap(const uint8_t* bmp, uint8_t col, uint8_t row, uint8_t width, uint8_t height, bmp_options_t options, DrawMode mode = pixel_set);
 
+        /**
+         * @brief draws a filled rectangle
+         * 
+         * @param col1 column of the first point
+         * @param row1 row of the first point
+         * @param col2 column of the second point
+         * @param row2 row of the second point
+         * @param mode  draw mode (see above)
+         */
+         void drawRect(uint8_t col1, uint8_t row1, uint8_t col2, uint8_t row2, FillMode fillMode = solid, DrawMode drawMode = pixel_set);
+
     private:
         SPI* _lcdSPI;
 
         DigitalOut* _sce;
         DigitalOut* _rst;
         DigitalOut* _dc;
-    
+
+        uint8_t getFillValue(uint8_t col, uint8_t row, FillMode fillMode);
 };
 
 //font from https://developer.mbed.org/users/eencae/code/N5110/docs/tip/N5110_8h_source.html

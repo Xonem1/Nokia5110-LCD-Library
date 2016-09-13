@@ -101,10 +101,10 @@ void Nokia_5110::display() {
     }
 }
 
-void Nokia_5110::drawPixel(uint8_t col, uint8_t row, uint8_t value, DrawMode mode) {
+void Nokia_5110::drawPixel(uint8_t col, uint8_t row, uint8_t value, DrawMode drawMode) {
     col %= LCD_WIDTH;
     row %= LCD_HEIGHT;
-    switch (mode) {
+    switch (drawMode) {
         case pixel_set: 
             if (value) 
                 buffer[col + (row / 8) * LCD_WIDTH] |= (1 << (row % 8));  
@@ -205,5 +205,30 @@ void Nokia_5110::drawBitmap(const uint8_t* bmp, uint8_t col, uint8_t row, uint8_
             }
         }
     } 
+}
 
+void Nokia_5110::drawRect(uint8_t col1, uint8_t row1, uint8_t col2, uint8_t row2, FillMode fillMode, DrawMode drawMode) {
+    for (uint8_t col = col1; col <= col2; col++) {
+        for (uint8_t row = row1; row < row2; row++) {
+            drawPixel(col, row, getFillValue(col, row, fillMode), drawMode);
+        }
+    }
+}
+
+uint8_t Nokia_5110::getFillValue(uint8_t col, uint8_t row, FillMode fillMode) {
+    switch (fillMode) {
+        default:
+        case solid:
+            return 1;
+        case none:
+            return 0;
+        case hatch:
+            return (col + row) % 3 ? 0 : 1;
+        case checkerboard:
+            return (col + row) % 2;
+        case stripes_horiz:
+            return row % 2;
+        case stripes_vert:
+            return col % 2;
+    }
 }
