@@ -1,4 +1,4 @@
-#include "Nokia_5110.h"
+#include "mbed-nokia-5110-lcd/Nokia_5110.h"
 
 // the memory buffer for the LCD
 uint8_t buffer[LCD_BYTES]; 

@@ -1,4 +1,4 @@
-#include "source/Nokia_5110.h"
+#include "mbed-nokia-5110-lcd/Nokia_5110.h"
 
 uint8_t dog1[51] = {
     0x5E, 0x80, 0x00,

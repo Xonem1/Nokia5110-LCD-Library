@@ -1,4 +1,4 @@
-#include "source/Nokia_5110.h"
+#include "mbed-nokia-5110-lcd/Nokia_5110.h"
 
 Nokia_5110 lcd(NC, D0, D1, D2, D3);
 DigitalOut led(LED1);
