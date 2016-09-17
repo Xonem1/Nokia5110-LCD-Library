@@ -49,3 +49,6 @@ upload.tar.gz
 
 ## Doxygen
 html
+*.sublime-workspace
+
+*.sublime-project
