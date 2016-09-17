@@ -101,13 +101,30 @@ void Nokia_5110::display() {
     }
 }
 
-void Nokia_5110::drawPixel(uint8_t col, uint8_t row, uint8_t value) {
+void Nokia_5110::drawPixel(uint8_t col, uint8_t row, uint8_t value, DrawMode drawMode) {
     col %= LCD_WIDTH;
     row %= LCD_HEIGHT;
-    if (value != 0) 
-        buffer[col + (row / 8) * LCD_WIDTH] |= (1 << (row % 8));  
-    else
-        buffer[col + (row / 8) * LCD_WIDTH] &= ~(1 << (row % 8)); 
+    switch (drawMode) {
+        case pixel_set: 
+            if (value) 
+                buffer[col + (row / 8) * LCD_WIDTH] |= (1 << (row % 8));  
+            else 
+                buffer[col + (row / 8) * LCD_WIDTH] &= ~(1 << (row % 8)); 
+            break;
+        case pixel_or:
+            if (value)
+                buffer[col + (row / 8) * LCD_WIDTH] |= (1 << (row % 8));  
+            break;
+        case pixel_xor:
+            if (value)
+                buffer[col + (row / 8) * LCD_WIDTH] ^= (1 << (row % 8));  
+            break;
+        case pixel_clear:
+            if (value)
+                buffer[col + (row / 8) * LCD_WIDTH] &= ~(1 << (row % 8));  
+            break;
+    }
+
 }
 
 uint8_t Nokia_5110::getPixel(uint8_t col, uint8_t row) {
@@ -131,32 +148,90 @@ uint8_t Nokia_5110::getByte(uint8_t col, uint8_t bank) {
     return buffer[col + bank * LCD_WIDTH];
 }
 
-void Nokia_5110::printChar(char c, uint8_t col, uint8_t row) {
+void Nokia_5110::printChar(char c, uint8_t col, uint8_t row, DrawMode mode) {
     col %= LCD_WIDTH;
     row %= LCD_HEIGHT;
 
     c -= 32;
 
-    if (!(row % 8)) {
-        for (unsigned int i = 0; i < 5; i++) {
-            drawByte(col + i, row / 8, font[(5 * c) + i]);
-        }
-    } else {
-        for (unsigned int i = 0; i < 5; i++) {
-            for (unsigned int b = 0; b < 8; b++) {
-                drawPixel(col + i, row + b, font[(5 * c) + i] & (1 << b));
-            }
+    for (unsigned int i = 0; i < 5; i++) {
+        for (unsigned int b = 0; b < 8; b++) {
+            drawPixel(col + i, row + b, font[(5 * c) + i] & (1 << b), mode);
         }
     }
 }
 
-void Nokia_5110::printString(const char* str, uint8_t col, uint8_t row) {
+void Nokia_5110::printString(const char* str, uint8_t col, uint8_t row, DrawMode mode) {
     col %= LCD_WIDTH;
     row %= LCD_HEIGHT;
 
     while (*str && col + 6 < LCD_WIDTH) {
-        printChar(*str, col, row);
+        printChar(*str, col, row, mode);
         col += 6;
         str++;
+    }
+}
+
+void Nokia_5110::drawBitmap(const uint8_t* bmp, uint8_t col, uint8_t row, uint8_t width, uint8_t height, DrawMode mode) {
+    uint8_t mask = 0x80;
+
+    for (uint8_t y = 0; y < height; y++) {
+        for (uint8_t x = 0; x < width; x++) {
+            drawPixel(col + x, row + y, *bmp & mask, mode);
+            mask >>= 1;
+            
+            if (mask == 0) { //if we reached the end of the byte
+                mask = 0x80;
+                bmp++;
+            }
+        }
+    } 
+}
+
+void Nokia_5110::drawWBitmap(const uint8_t* wbmp, uint8_t col, uint8_t row, DrawMode mode) {
+    if (*wbmp++ != 0x00) return; //image type, only supports 0
+    if (*wbmp++ != 0x00) return; //always 0
+    uint8_t width = *wbmp++;     //image width in pixels
+    uint8_t height = *wbmp++;    //image height in pixels
+
+    uint8_t mask = 0x80;
+
+    for (uint8_t y = 0; y < height; y++) {
+        for (uint8_t x = 0; x < width; x++) {
+            drawPixel(col + x, row + y, *wbmp & mask, mode);
+            mask >>= 1;
+
+            if (mask == 0) { //if we reached the end of the byte
+                mask = 0x80;
+                wbmp++;
+            }
+        }
+        mask = 0x80; //wbmps pad out the end of each row, so reset the mask
+    } 
+}
+
+void Nokia_5110::drawRect(uint8_t col1, uint8_t row1, uint8_t col2, uint8_t row2, FillMode fillMode, DrawMode drawMode) {
+    for (uint8_t col = col1; col <= col2; col++) {
+        for (uint8_t row = row1; row < row2; row++) {
+            drawPixel(col, row, getFillValue(col, row, fillMode), drawMode);
+        }
+    }
+}
+
+uint8_t Nokia_5110::getFillValue(uint8_t col, uint8_t row, FillMode fillMode) {
+    switch (fillMode) {
+        default:
+        case solid:
+            return 1;
+        case none:
+            return 0;
+        case hatch:
+            return (col + row) % 3 ? 0 : 1;
+        case checkerboard:
+            return (col + row) % 2;
+        case stripes_horiz:
+            return row % 2;
+        case stripes_vert:
+            return col % 2;
     }
 }

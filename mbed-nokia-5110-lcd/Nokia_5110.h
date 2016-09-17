@@ -44,6 +44,37 @@
 #define LCD_SETBIAS 0x10
 #define LCD_SETVOP 0x80
 
+/**
+ * @brief Mode for drawing pixels
+ */
+enum DrawMode {
+    pixel_set,
+    pixel_or,
+    pixel_xor,
+    pixel_clear
+};
+
+/**
+ * @brief Mode for filling shapes
+ */
+enum FillMode {
+    solid,
+    none,
+    hatch,
+    checkerboard,
+    stripes_horiz,
+    stripes_vert
+};
+
+/**
+ * @brief An API for using the Nokia 5110 display or other PCD8544-based displays with mbed-os
+ * @details The Nokia 5110 display is a 84x48 pixel single-bit LCD using the PCD8544 controller.
+ *  It is controlled by a modified version of the SPI protocol. 
+ *  
+ *  If the API or test files dont work at first, try changing the contrast setting. Different units
+ *   will work best at different values. I've had this value range from 40 to 80
+ * 
+ */
 class Nokia_5110 {
     public:
         /**
@@ -150,8 +181,9 @@ class Nokia_5110 {
          * @param col x coordinate (0-83)
          * @param row y coordinate (0-47)
          * @param value pixel value. 0 = white, 1 = black in normal mode
+         * @param drawMode  draw mode (see above)
          */
-        void drawPixel(uint8_t col, uint8_t row, uint8_t value);
+        void drawPixel(uint8_t col, uint8_t row, uint8_t value, DrawMode drawMode = pixel_set);
 
         /**
          * @brief gets the value of a pixel from the screen buffer
@@ -188,17 +220,50 @@ class Nokia_5110 {
          * @param c character to draw
          * @param col x coordinate of upper left (0-83)
          * @param row y coordinate of upper left (0-47)
+         * @param mode  draw mode (see above)
          */
-        void printChar(char c, uint8_t x, uint8_t row);
+        void printChar(char c, uint8_t col, uint8_t row, DrawMode mode = pixel_set);
 
         /**
          * @brief prints a string to the screen buffer
          * 
          * @param str string to print
          * @param col x coordinate of upper left (0-83)
-         * @param row y coordinate of upper left (0-57)
+         * @param row y coordinate of upper left (0-47)
+         * @param mode  draw mode (see above)
          */
-        void printString(const char* str, uint8_t col, uint8_t row);
+        void printString(const char* str, uint8_t col, uint8_t row, DrawMode mode = pixel_set);
+
+        /**
+         * @brief draws a bitmap to the screen buffer in an unpadded format
+         *
+         * @param bmp pointer to the start of the bitmap
+         * @param col x coordinate of upper left (0-83)
+         * @param row y coordinate of upper left (0-47)
+         * @param width bitmap width in pixels
+         * @param height bitmap height in pixels
+         */
+        void drawBitmap(const uint8_t* bmp, uint8_t col, uint8_t row, uint8_t width, uint8_t height, DrawMode mode = pixel_set);
+
+        /**
+         * @brief draws a bitmap to the screen buffer in the WBMP format
+         *
+         * @param wbmp pointer to the start of the bitmap
+         * @param col x coordinate of upper left (0-83)
+         * @param row y coordinate of upper left (0-47)
+         */
+        void drawWBitmap(const uint8_t* wbmp, uint8_t col, uint8_t row, DrawMode mode = pixel_set);
+
+        /**
+         * @brief draws a filled rectangle
+         * 
+         * @param col1 column of the first point
+         * @param row1 row of the first point
+         * @param col2 column of the second point
+         * @param row2 row of the second point
+         * @param mode  draw mode (see above)
+         */
+         void drawRect(uint8_t col1, uint8_t row1, uint8_t col2, uint8_t row2, FillMode fillMode = solid, DrawMode drawMode = pixel_set);
 
     private:
         SPI* _lcdSPI;
@@ -206,7 +271,8 @@ class Nokia_5110 {
         DigitalOut* _sce;
         DigitalOut* _rst;
         DigitalOut* _dc;
-    
+
+        uint8_t getFillValue(uint8_t col, uint8_t row, FillMode fillMode);
 };
 
 //font from https://developer.mbed.org/users/eencae/code/N5110/docs/tip/N5110_8h_source.html
