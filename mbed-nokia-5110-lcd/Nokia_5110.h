@@ -67,16 +67,6 @@ enum FillMode {
 };
 
 /**
- * @brief Bitmap draw options
- */
-struct bmp_options_t {
-    uint8_t rotation    : 2; /** < rotation of the bitmap in 90° increments, clockwise */
-    uint8_t mirrorX     : 1; /** < mirror on the x-axis */
-    uint8_t mirrorY     : 1; /** < mirror on the y-axis */
-    uint8_t invert      : 1; /** < invert the bitmap's colors */
-};
-
-/**
  * @brief An API for using the Nokia 5110 display or other PCD8544-based displays with mbed-os
  * @details The Nokia 5110 display is a 84x48 pixel single-bit LCD using the PCD8544 controller.
  *  It is controlled by a modified version of the SPI protocol. 
@@ -245,16 +235,24 @@ class Nokia_5110 {
         void printString(const char* str, uint8_t col, uint8_t row, DrawMode mode = pixel_set);
 
         /**
-         * @brief draws a bitmap to the screen buffer
+         * @brief draws a bitmap to the screen buffer in an unpadded format
          *
          * @param bmp pointer to the start of the bitmap
          * @param col x coordinate of upper left (0-83)
          * @param row y coordinate of upper left (0-47)
          * @param width bitmap width in pixels
          * @param height bitmap height in pixels
-         * @param options draw options 
          */
-        void drawBitmap(const uint8_t* bmp, uint8_t col, uint8_t row, uint8_t width, uint8_t height, bmp_options_t options, DrawMode mode = pixel_set);
+        void drawBitmap(const uint8_t* bmp, uint8_t col, uint8_t row, uint8_t width, uint8_t height, DrawMode mode = pixel_set);
+
+        /**
+         * @brief draws a bitmap to the screen buffer in the WBMP format
+         *
+         * @param wbmp pointer to the start of the bitmap
+         * @param col x coordinate of upper left (0-83)
+         * @param row y coordinate of upper left (0-47)
+         */
+        void drawWBitmap(const uint8_t* wbmp, uint8_t col, uint8_t row, DrawMode mode = pixel_set);
 
         /**
          * @brief draws a filled rectangle

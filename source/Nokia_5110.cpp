@@ -172,38 +172,41 @@ void Nokia_5110::printString(const char* str, uint8_t col, uint8_t row, DrawMode
     }
 }
 
-void Nokia_5110::drawBitmap(const uint8_t* bmp, uint8_t col, uint8_t row, uint8_t width, uint8_t height, bmp_options_t options, DrawMode mode) {
+void Nokia_5110::drawBitmap(const uint8_t* bmp, uint8_t col, uint8_t row, uint8_t width, uint8_t height, DrawMode mode) {
     uint8_t mask = 0x80;
-    uint8_t value;
-    uint8_t x2;
-    uint8_t y2;
+
     for (uint8_t y = 0; y < height; y++) {
         for (uint8_t x = 0; x < width; x++) {
-            value = ((*bmp & mask) ? 1 : 0) ^ options.invert;
-            x2 = options.mirrorX ? width  - x : x;
-            y2 = options.mirrorY ? height - y : y;
-
-            switch (options.rotation) {
-                case 0: 
-                    drawPixel(col + x2, row + y2, value, mode);
-                    break;
-                case 1: 
-                    drawPixel(col + height - y2, row + x2, value, mode);
-                    break;
-                case 2: 
-                    drawPixel(col + height - x2, row + height - y2, value, mode);
-                    break;
-                case 3: 
-                    drawPixel(col + y2, row + height - x2, value, mode);
-                    break;
-            }
-
+            drawPixel(col + x, row + y, *bmp & mask, mode);
             mask >>= 1;
-            if (mask == 0) {
+            
+            if (mask == 0) { //if we reached the end of the byte
                 mask = 0x80;
                 bmp++;
             }
         }
+    } 
+}
+
+void Nokia_5110::drawWBitmap(const uint8_t* wbmp, uint8_t col, uint8_t row, DrawMode mode) {
+    if (*wbmp++ != 0x00) return; //image type, only supports 0
+    if (*wbmp++ != 0x00) return; //always 0
+    uint8_t width = *wbmp++;     //image width in pixels
+    uint8_t height = *wbmp++;    //image height in pixels
+
+    uint8_t mask = 0x80;
+
+    for (uint8_t y = 0; y < height; y++) {
+        for (uint8_t x = 0; x < width; x++) {
+            drawPixel(col + x, row + y, *wbmp & mask, mode);
+            mask >>= 1;
+
+            if (mask == 0) { //if we reached the end of the byte
+                mask = 0x80;
+                wbmp++;
+            }
+        }
+        mask = 0x80; //wbmps pad out the end of each row, so reset the mask
     } 
 }
 

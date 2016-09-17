@@ -24,22 +24,7 @@ void app_start(int, char *[]) {
     Nokia_5110 lcd(NC, D0, D1, D2, D3);
     lcd.init(0x40, 4);
     lcd.clearBuffer();
-    bmp_options_t options;
-    lcd.drawBitmap(dog1, 5, 5, 24, 17, options);
-    options.rotation = 1;
-    lcd.drawBitmap(dog1, 30, 5, 24, 17, options);
-    options.mirrorX = 1;
-    options.rotation = 0;
-    lcd.drawBitmap(dog1, 55, 5, 24, 17, options);
-    options.mirrorX = 0;
-    options.rotation = 2;
-    lcd.drawBitmap(dog1, 5, 30, 24, 17, options);
-    options.rotation = 0;
-    options.mirrorY = 1;
-    lcd.drawBitmap(dog1, 30, 30, 24, 17, options);
-    options.rotation = 3;
-    options.mirrorY = 0;
-    options.invert = 1;
-    lcd.drawBitmap(dog1, 55, 30, 24, 17, options);
+    lcd.drawBitmap(dog1, 5, 5, 24, 17);
+
     lcd.display();
 }
