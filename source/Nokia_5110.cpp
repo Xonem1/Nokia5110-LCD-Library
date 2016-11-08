@@ -206,8 +206,11 @@ void Nokia_5110::drawWBitmap(const uint8_t* wbmp, uint8_t col, uint8_t row, Draw
                 wbmp++;
             }
         }
-        mask = 0x80; //wbmps pad out the end of each row, so reset the mask
-    } 
+        if (mask != 0x80) {
+            mask = 0x80; //wbmps pad out the end of each row, so reset the mask
+            wbmp++;
+        }
+    }
 }
 
 void Nokia_5110::drawRect(uint8_t col1, uint8_t row1, uint8_t col2, uint8_t row2, FillMode fillMode, DrawMode drawMode) {
