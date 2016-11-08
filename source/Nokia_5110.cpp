@@ -1,7 +1,7 @@
 #include "mbed-nokia-5110-lcd/Nokia_5110.h"
 
 // the memory buffer for the LCD
-uint8_t buffer[LCD_BYTES]; 
+uint8_t buffer[LCD_BYTES];
 
 Nokia_5110::Nokia_5110(PinName sce, PinName rst, PinName dc, PinName dn, PinName sclk) {
    _lcdSPI = new SPI(dn, NC, sclk);
@@ -105,23 +105,23 @@ void Nokia_5110::drawPixel(uint8_t col, uint8_t row, uint8_t value, DrawMode dra
     col %= LCD_WIDTH;
     row %= LCD_HEIGHT;
     switch (drawMode) {
-        case pixel_set: 
-            if (value) 
-                buffer[col + (row / 8) * LCD_WIDTH] |= (1 << (row % 8));  
-            else 
-                buffer[col + (row / 8) * LCD_WIDTH] &= ~(1 << (row % 8)); 
+        case pixel_set:
+            if (value)
+                buffer[col + (row / 8) * LCD_WIDTH] |= (1 << (row % 8));
+            else
+                buffer[col + (row / 8) * LCD_WIDTH] &= ~(1 << (row % 8));
             break;
         case pixel_or:
             if (value)
-                buffer[col + (row / 8) * LCD_WIDTH] |= (1 << (row % 8));  
+                buffer[col + (row / 8) * LCD_WIDTH] |= (1 << (row % 8));
             break;
         case pixel_xor:
             if (value)
-                buffer[col + (row / 8) * LCD_WIDTH] ^= (1 << (row % 8));  
+                buffer[col + (row / 8) * LCD_WIDTH] ^= (1 << (row % 8));
             break;
         case pixel_clear:
             if (value)
-                buffer[col + (row / 8) * LCD_WIDTH] &= ~(1 << (row % 8));  
+                buffer[col + (row / 8) * LCD_WIDTH] &= ~(1 << (row % 8));
             break;
     }
 
@@ -179,13 +179,13 @@ void Nokia_5110::drawBitmap(const uint8_t* bmp, uint8_t col, uint8_t row, uint8_
         for (uint8_t x = 0; x < width; x++) {
             drawPixel(col + x, row + y, *bmp & mask, mode);
             mask >>= 1;
-            
+
             if (mask == 0) { //if we reached the end of the byte
                 mask = 0x80;
                 bmp++;
             }
         }
-    } 
+    }
 }
 
 void Nokia_5110::drawWBitmap(const uint8_t* wbmp, uint8_t col, uint8_t row, DrawMode mode) {
@@ -206,8 +206,11 @@ void Nokia_5110::drawWBitmap(const uint8_t* wbmp, uint8_t col, uint8_t row, Draw
                 wbmp++;
             }
         }
-        mask = 0x80; //wbmps pad out the end of each row, so reset the mask
-    } 
+        if (mask != 0x80) {
+            mask = 0x80; //wbmps pad out the end of each row, so reset the mask
+            wbmp++;
+        }
+    }
 }
 
 void Nokia_5110::drawRect(uint8_t col1, uint8_t row1, uint8_t col2, uint8_t row2, FillMode fillMode, DrawMode drawMode) {
