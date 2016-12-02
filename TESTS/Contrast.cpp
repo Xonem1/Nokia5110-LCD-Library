@@ -1,4 +1,4 @@
-#include "mbed-nokia-5110-lcd/Nokia_5110.h"
+#include "Nokia5110.h"
 
 Nokia_5110 lcd(NC, D0, D1, D2, D3);
 DigitalOut led(LED1);
@@ -34,7 +34,7 @@ void contrastDown() {
     blink();
 }
 
-void app_start(int, char *[]) {
+int main() {
     increment.rise(&contrastUp);
     decrement.rise(&contrastDown);
     lcd.init(contrast, 4);

@@ -39,11 +39,10 @@
 *.map
 
 ## MBed
-# Modules
-yotta_modules
-yotta_targets
-build
-.yotta.json
+mbed_settings.py
+mbed_settings.pyc
+BUILD
+.mbed
 
 upload.tar.gz
 
@@ -53,3 +52,6 @@ html
 ## Sublime
 *.sublime-workspace
 *.sublime-project
+
+## VS Code
+.vscode
