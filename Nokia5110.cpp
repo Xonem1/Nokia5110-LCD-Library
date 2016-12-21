@@ -222,6 +222,40 @@ void Nokia_5110::drawWBitmap(const uint8_t *wbmp, uint8_t col, uint8_t row,
     }
 }
 
+void Nokia_5110::drawLine(uint8_t col0, uint8_t col1, uint8_t row0,
+                          uint8_t row1, DrawMode mode) {
+
+    bool flipX = (col0 > col1);
+    bool flipY = (row0 > row1);
+    uint8_t dx = abs(col1 - col0);
+    uint8_t dy = abs(row1 - row0);
+
+    if (dy < dx) {
+        int8_t d = (2 * dy) - dx;
+        uint8_t y = 0;
+        for (uint8_t x = 0; x <= dx; x++) {
+            drawPixel(col0 + flipX ? x : -x, row0 + flipY ? y : -y, 1, mode);
+            if (d > 0) {
+                y++;
+                d -= dx;
+            }
+            d += dx;
+        }
+
+    } else {
+        int8_t d = (2 * dx) - dy;
+        uint8_t x = 0;
+        for (uint8_t y = 0; y <= dy; y++) {
+            drawPixel(row0 + flipY ? y : -y, col0 + flipX ? x : -x, 1, mode);
+            if (d > 0) {
+                x++;
+                d -= dy;
+            }
+            d += dy;
+        }
+    }
+}
+
 void Nokia_5110::drawRect(uint8_t col1, uint8_t row1, uint8_t col2,
                           uint8_t row2, FillMode fillMode, DrawMode drawMode) {
     for (uint8_t col = col1; col <= col2; col++) {
