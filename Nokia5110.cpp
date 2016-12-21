@@ -234,24 +234,24 @@ void Nokia_5110::drawLine(uint8_t col0, uint8_t col1, uint8_t row0,
         int8_t d = (2 * dy) - dx;
         uint8_t y = 0;
         for (uint8_t x = 0; x <= dx; x++) {
-            drawPixel(col0 + flipX ? x : -x, row0 + flipY ? y : -y, 1, mode);
+            drawPixel(col0 + (flipX ? -x : x), row0 + (flipY ? -y : y), 1, mode);
             if (d > 0) {
                 y++;
                 d -= dx;
             }
-            d += dx;
+            d += dy;
         }
 
     } else {
         int8_t d = (2 * dx) - dy;
         uint8_t x = 0;
         for (uint8_t y = 0; y <= dy; y++) {
-            drawPixel(row0 + flipY ? y : -y, col0 + flipX ? x : -x, 1, mode);
+            drawPixel(col0 + (flipX ? -x : x), row0 + (flipY ? -y : y), 1, mode);
             if (d > 0) {
                 x++;
                 d -= dy;
             }
-            d += dy;
+            d += dx;
         }
     }
 }
