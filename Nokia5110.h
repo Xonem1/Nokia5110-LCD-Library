@@ -265,17 +265,17 @@ class Nokia_5110 {
     void drawLine(uint8_t col0, uint8_t col1, uint8_t row0, uint8_t row1,
                   DrawMode mode = pixel_set);
 
-        /**
-               * @brief draws a filled rectangle
-               *
-               * @param col1 column of the first point
-               * @param row1 row of the first point
-               * @param col2 column of the second point
-               * @param row2 row of the second point
-               * @param mode  draw mode (see above)
-               */
-        void drawRect(uint8_t col1, uint8_t row1, uint8_t col2, uint8_t row2,
-                      FillMode fillMode = solid, DrawMode drawMode = pixel_set);
+    /**
+           * @brief draws a filled rectangle
+           *
+           * @param col1 column of the first point
+           * @param row1 row of the first point
+           * @param col2 column of the second point
+           * @param row2 row of the second point
+           * @param mode  draw mode (see above)
+           */
+    void drawRect(uint8_t col1, uint8_t row1, uint8_t col2, uint8_t row2,
+                  FillMode fillMode = solid, DrawMode drawMode = pixel_set);
 
   private:
     SPI *_lcdSPI;
