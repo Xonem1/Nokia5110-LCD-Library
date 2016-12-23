@@ -68,7 +68,7 @@ enum FillMode { solid, none, hatch, checkerboard, stripes_horiz, stripes_vert };
  *   will work best at different values. I've had this value range from 40 to 80
  *
  */
-class Nokia_5110 {
+class Nokia5110 {
   public:
     /**
            * @brief constructor
@@ -79,7 +79,7 @@ class Nokia_5110 {
            * @param dn data pin (MOSI)
            * @param sclk clock pin (SCLK)
            */
-    Nokia_5110(PinName sce, PinName rst, PinName dc, PinName dn, PinName sclk);
+    Nokia5110(PinName sce, PinName rst, PinName dc, PinName dn, PinName sclk);
 
     /**
            * @brief initialize the display with given contrast and bias.

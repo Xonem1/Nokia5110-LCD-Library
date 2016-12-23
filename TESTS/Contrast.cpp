@@ -1,6 +1,6 @@
 #include "Nokia5110.h"
 
-Nokia_5110 lcd(NC, D0, D1, D2, D3);
+Nokia5110 lcd(NC, D0, D1, D2, D3);
 DigitalOut led(LED1);
 InterruptIn increment(D5);
 InterruptIn decrement(D6);
