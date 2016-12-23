@@ -60,7 +60,7 @@ void Nokia5110::set_bias(uint8_t bias) {
         bias = 0x08;
 
     send_command(LCD_FUNCTIONSET | LCD_EXTENDEDINSTRUCTION);
-    send_command(LCD_set_bias | bias);
+    send_command(LCD_SETBIAS | bias);
     send_command(LCD_FUNCTIONSET);
 }
 
