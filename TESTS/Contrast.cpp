@@ -7,12 +7,12 @@ InterruptIn decrement(D6);
 uint8_t contrast = 40;
 
 void refreshDisplay() {
-    lcd.setContrast(contrast);
+    lcd.set_contrast(contrast);
     char buffer[10];
     itoa(contrast, buffer, 16);
-    lcd.clearBuffer();
-    lcd.printString((char*) "Contrast=0x", 0, 0);
-    lcd.printString(buffer, 66, 0);
+    lcd.clear_buffer();
+    lcd.print_string((char*) "Contrast=0x", 0, 0);
+    lcd.print_string(buffer, 66, 0);
     lcd.display();
 }
 
@@ -38,6 +38,6 @@ int main() {
     increment.rise(&contrastUp);
     decrement.rise(&contrastDown);
     lcd.init(contrast, 4);
-    lcd.clearBuffer();
+    lcd.clear_buffer();
     refreshDisplay();
 }

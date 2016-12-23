@@ -5,9 +5,9 @@ uint8_t buffer[LCD_BYTES];
 
 Nokia_5110::Nokia_5110(PinName sce, PinName rst, PinName dc, PinName dn,
                        PinName sclk) {
-    _lcdSPI = new SPI(dn, NC, sclk);
-    _lcdSPI->format(LCD_SPI_BITS, LCD_SPI_MODE);
-    _lcdSPI->frequency(LCD_SPI_FREQ);
+    _lcd_SPI = new SPI(dn, NC, sclk);
+    _lcd_SPI->format(LCD_SPI_BITS, LCD_SPI_MODE);
+    _lcd_SPI->frequency(LCD_SPI_FREQ);
 
     _sce = new DigitalOut(sce, 1);
     _rst = new DigitalOut(rst, 1);
@@ -17,9 +17,9 @@ Nokia_5110::Nokia_5110(PinName sce, PinName rst, PinName dc, PinName dn,
 void Nokia_5110::init(uint8_t con, uint8_t bias) {
     reset();
     wait_ms(10);
-    setContrast(con);
-    setBias(bias);
-    setMode(LCD_DISPLAYNORMAL);
+    set_contrast(con);
+    set_bias(bias);
+    set_mode(LCD_DISPLAYNORMAL);
 }
 
 void Nokia_5110::reset() {
@@ -28,85 +28,85 @@ void Nokia_5110::reset() {
     _rst->write(1);
 }
 
-void Nokia_5110::sendCommand(uint8_t cmd) {
+void Nokia_5110::send_command(uint8_t cmd) {
     _sce->write(0);
 
-    _lcdSPI->write(cmd);
+    _lcd_SPI->write(cmd);
 
     _sce->write(1);
 }
 
-void Nokia_5110::sendData(uint8_t data) {
+void Nokia_5110::send_data(uint8_t data) {
     _dc->write(1);
     _sce->write(0);
 
-    _lcdSPI->write(data);
+    _lcd_SPI->write(data);
 
     _sce->write(1);
     _dc->write(0);
 }
 
-void Nokia_5110::setContrast(uint8_t con) {
+void Nokia_5110::set_contrast(uint8_t con) {
     if (con > 0x7f)
         con = 0x7f;
 
-    sendCommand(LCD_FUNCTIONSET | LCD_EXTENDEDINSTRUCTION);
-    sendCommand(LCD_SETVOP | con);
-    sendCommand(LCD_FUNCTIONSET);
+    send_command(LCD_FUNCTIONSET | LCD_EXTENDEDINSTRUCTION);
+    send_command(LCD_SETVOP | con);
+    send_command(LCD_FUNCTIONSET);
 }
 
-void Nokia_5110::setBias(uint8_t bias) {
+void Nokia_5110::set_bias(uint8_t bias) {
     if (bias > 0x08)
         bias = 0x08;
 
-    sendCommand(LCD_FUNCTIONSET | LCD_EXTENDEDINSTRUCTION);
-    sendCommand(LCD_SETBIAS | bias);
-    sendCommand(LCD_FUNCTIONSET);
+    send_command(LCD_FUNCTIONSET | LCD_EXTENDEDINSTRUCTION);
+    send_command(LCD_set_bias | bias);
+    send_command(LCD_FUNCTIONSET);
 }
 
-void Nokia_5110::setMode(uint8_t mode) {
+void Nokia_5110::set_mode(uint8_t mode) {
     if (mode > 0x08)
         mode = 0x08;
 
-    sendCommand(LCD_DISPLAYCONTROL | mode);
+    send_command(LCD_DISPLAYCONTROL | mode);
 }
 
-void Nokia_5110::setPower(uint8_t pow) {
+void Nokia_5110::set_power(uint8_t pow) {
     pow = pow ? 0 : LCD_POWERDOWN;
-    sendCommand(LCD_FUNCTIONSET | pow);
+    send_command(LCD_FUNCTIONSET | pow);
 }
 
-void Nokia_5110::setXAddr(uint8_t col) {
+void Nokia_5110::set_x_addr(uint8_t col) {
     col %= LCD_WIDTH;
-    sendCommand(LCD_SETXADDR | col);
+    send_command(LCD_SETXADDR | col);
 }
 
-void Nokia_5110::setYAddr(uint8_t bank) {
+void Nokia_5110::set_y_addr(uint8_t bank) {
     bank %= LCD_BANKS;
-    sendCommand(LCD_SETYADDR | bank);
+    send_command(LCD_SETYADDR | bank);
 }
 
-void Nokia_5110::setCursor(uint8_t col, uint8_t bank) {
-    setXAddr(col);
-    setYAddr(bank);
+void Nokia_5110::set_cursor(uint8_t col, uint8_t bank) {
+    set_x_addr(col);
+    set_y_addr(bank);
 }
 
-void Nokia_5110::clearBuffer() {
+void Nokia_5110::clear_buffer() {
     for (unsigned int i = 0; i < LCD_BYTES; i++) {
         buffer[i] = 0x00;
     }
 }
 
 void Nokia_5110::display() {
-    setYAddr(0);
-    setXAddr(0);
+    set_y_addr(0);
+    set_x_addr(0);
     for (unsigned int i = 0; i < LCD_BYTES; i++) {
-        sendData(buffer[i]);
+        send_data(buffer[i]);
     }
 }
 
-void Nokia_5110::drawPixel(uint8_t col, uint8_t row, uint8_t value,
-                           DrawMode drawMode) {
+void Nokia_5110::draw_pixel(uint8_t col, uint8_t row, uint8_t value,
+                            DrawMode drawMode) {
     col %= LCD_WIDTH;
     row %= LCD_HEIGHT;
     switch (drawMode) {
@@ -131,28 +131,28 @@ void Nokia_5110::drawPixel(uint8_t col, uint8_t row, uint8_t value,
     }
 }
 
-uint8_t Nokia_5110::getPixel(uint8_t col, uint8_t row) {
+uint8_t Nokia_5110::get_pixel(uint8_t col, uint8_t row) {
     col %= LCD_WIDTH;
     row %= LCD_HEIGHT;
 
     return buffer[col + (row / 8) * LCD_WIDTH] & (1 << (row % 8));
 }
 
-void Nokia_5110::drawByte(uint8_t col, uint8_t bank, uint8_t byte) {
+void Nokia_5110::draw_byte(uint8_t col, uint8_t bank, uint8_t byte) {
     col %= LCD_WIDTH;
     bank %= LCD_BANKS;
 
     buffer[col + bank * LCD_WIDTH] = byte;
 }
 
-uint8_t Nokia_5110::getByte(uint8_t col, uint8_t bank) {
+uint8_t Nokia_5110::get_byte(uint8_t col, uint8_t bank) {
     col %= LCD_WIDTH;
     bank %= LCD_BANKS;
 
     return buffer[col + bank * LCD_WIDTH];
 }
 
-void Nokia_5110::printChar(char c, uint8_t col, uint8_t row, DrawMode mode) {
+void Nokia_5110::print_char(char c, uint8_t col, uint8_t row, DrawMode mode) {
     col %= LCD_WIDTH;
     row %= LCD_HEIGHT;
 
@@ -160,30 +160,30 @@ void Nokia_5110::printChar(char c, uint8_t col, uint8_t row, DrawMode mode) {
 
     for (unsigned int i = 0; i < 5; i++) {
         for (unsigned int b = 0; b < 8; b++) {
-            drawPixel(col + i, row + b, font[(5 * c) + i] & (1 << b), mode);
+            draw_pixel(col + i, row + b, font[(5 * c) + i] & (1 << b), mode);
         }
     }
 }
 
-void Nokia_5110::printString(const char *str, uint8_t col, uint8_t row,
-                             DrawMode mode) {
+void Nokia_5110::print_string(const char *str, uint8_t col, uint8_t row,
+                              DrawMode mode) {
     col %= LCD_WIDTH;
     row %= LCD_HEIGHT;
 
     while (*str && col + 6 < LCD_WIDTH) {
-        printChar(*str, col, row, mode);
+        print_char(*str, col, row, mode);
         col += 6;
         str++;
     }
 }
 
-void Nokia_5110::drawBitmap(const uint8_t *bmp, uint8_t col, uint8_t row,
-                            uint8_t width, uint8_t height, DrawMode mode) {
+void Nokia_5110::draw_bitmap(const uint8_t *bmp, uint8_t col, uint8_t row,
+                             uint8_t width, uint8_t height, DrawMode mode) {
     uint8_t mask = 0x80;
 
     for (uint8_t y = 0; y < height; y++) {
         for (uint8_t x = 0; x < width; x++) {
-            drawPixel(col + x, row + y, *bmp & mask, mode);
+            draw_pixel(col + x, row + y, *bmp & mask, mode);
             mask >>= 1;
 
             if (mask == 0) { // if we reached the end of the byte
@@ -194,8 +194,8 @@ void Nokia_5110::drawBitmap(const uint8_t *bmp, uint8_t col, uint8_t row,
     }
 }
 
-void Nokia_5110::drawWBitmap(const uint8_t *wbmp, uint8_t col, uint8_t row,
-                             DrawMode mode) {
+void Nokia_5110::draw_wbitmap(const uint8_t *wbmp, uint8_t col, uint8_t row,
+                              DrawMode mode) {
     if (*wbmp++ != 0x00) // image type, only supports 0
         return;
     if (*wbmp++ != 0x00) // always 0
@@ -207,7 +207,7 @@ void Nokia_5110::drawWBitmap(const uint8_t *wbmp, uint8_t col, uint8_t row,
 
     for (uint8_t y = 0; y < height; y++) {
         for (uint8_t x = 0; x < width; x++) {
-            drawPixel(col + x, row + y, *wbmp & mask, mode);
+            draw_pixel(col + x, row + y, *wbmp & mask, mode);
             mask >>= 1;
 
             if (mask == 0) { // if we reached the end of the byte
@@ -222,10 +222,10 @@ void Nokia_5110::drawWBitmap(const uint8_t *wbmp, uint8_t col, uint8_t row,
     }
 }
 
-void Nokia_5110::drawLine(uint8_t col0, uint8_t col1, uint8_t row0,
-                          uint8_t row1, DrawMode mode) {
-    bool flipX = (col0 > col1);
-    bool flipY = (row0 > row1);
+void Nokia_5110::draw_line(uint8_t col0, uint8_t col1, uint8_t row0,
+                           uint8_t row1, DrawMode mode) {
+    int8_t x_mult = (col0 > col1) ? -1 : 1;
+    int8_t y_mult = (row0 > row1) ? -1 : 1;
     uint8_t dx = abs(col1 - col0);
     uint8_t dy = abs(row1 - row0);
 
@@ -233,9 +233,7 @@ void Nokia_5110::drawLine(uint8_t col0, uint8_t col1, uint8_t row0,
         int8_t d = (2 * dy) - dx;
         uint8_t y = 0;
         for (uint8_t x = 0; x <= dx; x++) {
-            drawPixel(col0 + (flipX ? -x : x),
-                      row0 + (flipY ? -y : y), 
-                      1, mode);
+            draw_pixel(col0 + (x_mult * x), row0 + (y_mult * y), 1, mode);
             if (d > 0) {
                 y++;
                 d -= dx;
@@ -246,9 +244,7 @@ void Nokia_5110::drawLine(uint8_t col0, uint8_t col1, uint8_t row0,
         int8_t d = (2 * dx) - dy;
         uint8_t x = 0;
         for (uint8_t y = 0; y <= dy; y++) {
-            drawPixel(col0 + (flipX ? -x : x),
-                      row0 + (flipY ? -y : y),
-                      1, mode);
+            draw_pixel(col0 + (x_mult * x), row0 + (y_mult * y), 1, mode);
             if (d > 0) {
                 x++;
                 d -= dy;
@@ -258,16 +254,17 @@ void Nokia_5110::drawLine(uint8_t col0, uint8_t col1, uint8_t row0,
     }
 }
 
-void Nokia_5110::drawRect(uint8_t col1, uint8_t row1, uint8_t col2,
-                          uint8_t row2, FillMode fillMode, DrawMode drawMode) {
+void Nokia_5110::draw_rect(uint8_t col1, uint8_t row1, uint8_t col2,
+                           uint8_t row2, FillMode fillMode, DrawMode drawMode) {
     for (uint8_t col = col1; col <= col2; col++) {
         for (uint8_t row = row1; row < row2; row++) {
-            drawPixel(col, row, getFillValue(col, row, fillMode), drawMode);
+            draw_pixel(col, row, get_fill_value(col, row, fillMode), drawMode);
         }
     }
 }
 
-uint8_t Nokia_5110::getFillValue(uint8_t col, uint8_t row, FillMode fillMode) {
+uint8_t Nokia_5110::get_fill_value(uint8_t col, uint8_t row,
+                                   FillMode fillMode) {
     switch (fillMode) {
     default:
     case solid:

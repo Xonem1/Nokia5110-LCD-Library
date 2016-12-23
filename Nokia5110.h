@@ -100,14 +100,14 @@ class Nokia_5110 {
            *
            * @param cmd command to send
            */
-    void sendCommand(uint8_t cmd);
+    void send_command(uint8_t cmd);
 
     /**
            * @brief send a byte of data to the display
            *
            * @param data data to send
            */
-    void sendData(uint8_t data);
+    void send_data(uint8_t data);
 
     /**
            * @brief sets the display's contrast
@@ -115,42 +115,42 @@ class Nokia_5110 {
            * @param con contrast, usually between 40 and 60 depending on your
      * display
            */
-    void setContrast(uint8_t con);
+    void set_contrast(uint8_t con);
 
     /**
            * @brief sets the dispay's bias
            *
            * @param bias bias, should be 0x4 for the Nokia 5110 display
            */
-    void setBias(uint8_t bias);
+    void set_bias(uint8_t bias);
 
     /**
            * @brief sets the display's display mode
            *
            * @param mode display mode (Blank, inverted, allon or normal)
            */
-    void setMode(uint8_t mode);
+    void set_mode(uint8_t mode);
 
     /**
            * @brief turns the display on or off
            *
            * @param pow power, 0 = off, 1 = on
            */
-    void setPower(uint8_t pow);
+    void set_power(uint8_t pow);
 
     /**
            * @brief sets the X value of the cursor
            *
            * @param col x coordinate (0-83)
            */
-    void setXAddr(uint8_t col);
+    void set_x_addr(uint8_t col);
 
     /**
            * @brief sets the Y value of the cursor
            *
            * @param bank memory bank (0-5)
            */
-    void setYAddr(uint8_t bank);
+    void set_y_addr(uint8_t bank);
 
     /**
            * @brief sets the X and Y values of the cursor
@@ -158,12 +158,12 @@ class Nokia_5110 {
            * @param col x coordinate (0-83)
            * @param bank memory bank (0-5)
            */
-    void setCursor(uint8_t col, uint8_t bank);
+    void set_cursor(uint8_t col, uint8_t bank);
 
     /**
            * @brief clears the screen buffer
            */
-    void clearBuffer();
+    void clear_buffer();
 
     /**
            * @brief sends the screen buffer to the display
@@ -178,8 +178,8 @@ class Nokia_5110 {
            * @param value pixel value. 0 = white, 1 = black in normal mode
            * @param drawMode  draw mode (see above)
            */
-    void drawPixel(uint8_t col, uint8_t row, uint8_t value,
-                   DrawMode drawMode = pixel_set);
+    void draw_pixel(uint8_t col, uint8_t row, uint8_t value,
+                    DrawMode drawMode = pixel_set);
 
     /**
            * @brief gets the value of a pixel from the screen buffer
@@ -189,7 +189,7 @@ class Nokia_5110 {
            *
            * @return value of the pixel, 0 if white
            */
-    uint8_t getPixel(uint8_t col, uint8_t bank);
+    uint8_t get_pixel(uint8_t col, uint8_t bank);
 
     /**
            * @brief draws a byte to the screen buffer
@@ -198,7 +198,7 @@ class Nokia_5110 {
            * @param bank memory bank (0-5)
            * @param byte byte to draw
            */
-    void drawByte(uint8_t col, uint8_t bank, uint8_t byte);
+    void draw_byte(uint8_t col, uint8_t bank, uint8_t byte);
 
     /**
            * @brief gets a byte from the screen buffer
@@ -208,7 +208,7 @@ class Nokia_5110 {
            *
            * @return byte from the screen buffer
            */
-    uint8_t getByte(uint8_t col, uint8_t row);
+    uint8_t get_byte(uint8_t col, uint8_t row);
 
     /**
            * @brief prints a 7x5 character to the screen buffer
@@ -218,7 +218,8 @@ class Nokia_5110 {
            * @param row y coordinate of upper left (0-47)
            * @param mode  draw mode (see above)
            */
-    void printChar(char c, uint8_t col, uint8_t row, DrawMode mode = pixel_set);
+    void print_char(char c, uint8_t col, uint8_t row,
+                    DrawMode mode = pixel_set);
 
     /**
            * @brief prints a string to the screen buffer
@@ -228,8 +229,8 @@ class Nokia_5110 {
            * @param row y coordinate of upper left (0-47)
            * @param mode  draw mode (see above)
            */
-    void printString(const char *str, uint8_t col, uint8_t row,
-                     DrawMode mode = pixel_set);
+    void print_string(const char *str, uint8_t col, uint8_t row,
+                      DrawMode mode = pixel_set);
 
     /**
            * @brief draws a bitmap to the screen buffer in an unpadded format
@@ -240,8 +241,8 @@ class Nokia_5110 {
            * @param width bitmap width in pixels
            * @param height bitmap height in pixels
            */
-    void drawBitmap(const uint8_t *bmp, uint8_t col, uint8_t row, uint8_t width,
-                    uint8_t height, DrawMode mode = pixel_set);
+    void draw_bitmap(const uint8_t *bmp, uint8_t col, uint8_t row,
+                     uint8_t width, uint8_t height, DrawMode mode = pixel_set);
 
     /**
            * @brief draws a bitmap to the screen buffer in the WBMP format
@@ -250,8 +251,8 @@ class Nokia_5110 {
            * @param col x coordinate of upper left (0-83)
            * @param row y coordinate of upper left (0-47)
            */
-    void drawWBitmap(const uint8_t *wbmp, uint8_t col, uint8_t row,
-                     DrawMode mode = pixel_set);
+    void draw_wbitmap(const uint8_t *wbmp, uint8_t col, uint8_t row,
+                      DrawMode mode = pixel_set);
 
     /**
           *@brief draws a line to the screen buffer
@@ -262,8 +263,8 @@ class Nokia_5110 {
           *@param row1 row of second point
           *@param mode  draw mode (see above)
           */
-    void drawLine(uint8_t col0, uint8_t col1, uint8_t row0, uint8_t row1,
-                  DrawMode mode = pixel_set);
+    void draw_line(uint8_t col0, uint8_t col1, uint8_t row0, uint8_t row1,
+                   DrawMode mode = pixel_set);
 
     /**
            * @brief draws a filled rectangle
@@ -274,17 +275,17 @@ class Nokia_5110 {
            * @param row2 row of the second point
            * @param mode  draw mode (see above)
            */
-    void drawRect(uint8_t col1, uint8_t row1, uint8_t col2, uint8_t row2,
-                  FillMode fillMode = solid, DrawMode drawMode = pixel_set);
+    void draw_rect(uint8_t col1, uint8_t row1, uint8_t col2, uint8_t row2,
+                   FillMode fillMode = solid, DrawMode drawMode = pixel_set);
 
   private:
-    SPI *_lcdSPI;
+    SPI *_lcd_SPI;
 
     DigitalOut *_sce;
     DigitalOut *_rst;
     DigitalOut *_dc;
 
-    uint8_t getFillValue(uint8_t col, uint8_t row, FillMode fillMode);
+    uint8_t get_fill_value(uint8_t col, uint8_t row, FillMode fillMode);
 };
 
 extern const uint8_t font[480];

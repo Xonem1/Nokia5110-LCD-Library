@@ -23,8 +23,8 @@ uint8_t dog1[51] = {
 int main() {
     Nokia_5110 lcd(NC, D0, D1, D2, D3);
     lcd.init(0x40, 4);
-    lcd.clearBuffer();
-    lcd.drawBitmap(dog1, 5, 5, 24, 17);
+    lcd.clear_buffer();
+    lcd.draw_bitmap(dog1, 5, 5, 24, 17);
 
     lcd.display();
 }
