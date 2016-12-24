@@ -61,7 +61,7 @@ enum FillMode { solid, none, hatch, checkerboard, stripes_horiz, stripes_vert };
  * displays with mbed-os
  * @details The Nokia 5110 display is a 84x48 pixel single-bit LCD using the
  * PCD8544 controller.
- *  It is controlled by a modified version of the SPI protocol.
+ *  It is controlled by a modified version of the SPI protox.
  *
  *  If the API or test files dont work at first, try changing the contrast
  * setting. Different units
@@ -143,14 +143,14 @@ class Nokia5110 {
            *
            * @param col x coordinate (0-83)
            */
-    void set_x_addr(uint8_t col);
+    void set_column(uint8_t col);
 
     /**
            * @brief sets the Y value of the cursor
            *
            * @param bank memory bank (0-5)
            */
-    void set_y_addr(uint8_t bank);
+    void set_bank(uint8_t bank);
 
     /**
            * @brief sets the X and Y values of the cursor
@@ -173,109 +173,109 @@ class Nokia5110 {
     /**
            * @brief draws a pixel to the screen buffer
            *
-           * @param col x coordinate (0-83)
-           * @param row y coordinate (0-47)
+           * @param x x coordinate (0-83)
+           * @param y y coordinate (0-47)
            * @param value pixel value. 0 = white, 1 = black in normal mode
            * @param drawMode  draw mode (see above)
            */
-    void draw_pixel(uint8_t col, uint8_t row, uint8_t value,
+    void draw_pixel(uint8_t x, uint8_t y, uint8_t value,
                     DrawMode drawMode = pixel_set);
 
     /**
            * @brief gets the value of a pixel from the screen buffer
            *
-           * @param col x coordinate (0-83)
-           * @param row y coordinate (0-47)
+           * @param x x coordinate (0-83)
+           * @param y y coordinate (0-47)
            *
            * @return value of the pixel, 0 if white
            */
-    uint8_t get_pixel(uint8_t col, uint8_t bank);
+    uint8_t get_pixel(uint8_t x, uint8_t bank);
 
     /**
            * @brief draws a byte to the screen buffer
            *
-           * @param col x coordinate, (0-83)
+           * @param x x coordinate, (0-83)
            * @param bank memory bank (0-5)
            * @param byte byte to draw
            */
-    void draw_byte(uint8_t col, uint8_t bank, uint8_t byte);
+    void draw_byte(uint8_t x, uint8_t bank, uint8_t byte);
 
     /**
            * @brief gets a byte from the screen buffer
            *
-           * @param col x coordinate (0-83)
+           * @param x x coordinate (0-83)
            * @param bank memory bank (0-5)
            *
            * @return byte from the screen buffer
            */
-    uint8_t get_byte(uint8_t col, uint8_t row);
+    uint8_t get_byte(uint8_t x, uint8_t y);
 
     /**
            * @brief prints a 7x5 character to the screen buffer
            *
            * @param c character to draw
-           * @param col x coordinate of upper left (0-83)
-           * @param row y coordinate of upper left (0-47)
+           * @param x x coordinate of upper left (0-83)
+           * @param y y coordinate of upper left (0-47)
            * @param mode  draw mode (see above)
            */
-    void print_char(char c, uint8_t col, uint8_t row,
+    void print_char(char c, uint8_t x, uint8_t y,
                     DrawMode mode = pixel_set);
 
     /**
            * @brief prints a string to the screen buffer
            *
            * @param str string to print
-           * @param col x coordinate of upper left (0-83)
-           * @param row y coordinate of upper left (0-47)
+           * @param x x coordinate of upper left (0-83)
+           * @param y y coordinate of upper left (0-47)
            * @param mode  draw mode (see above)
            */
-    void print_string(const char *str, uint8_t col, uint8_t row,
+    void print_string(const char *str, uint8_t x, uint8_t y,
                       DrawMode mode = pixel_set);
 
     /**
            * @brief draws a bitmap to the screen buffer in an unpadded format
            *
            * @param bmp pointer to the start of the bitmap
-           * @param col x coordinate of upper left (0-83)
-           * @param row y coordinate of upper left (0-47)
+           * @param x x coordinate of upper left (0-83)
+           * @param y y coordinate of upper left (0-47)
            * @param width bitmap width in pixels
            * @param height bitmap height in pixels
            */
-    void draw_bitmap(const uint8_t *bmp, uint8_t col, uint8_t row,
+    void draw_bitmap(const uint8_t *bmp, uint8_t x, uint8_t y,
                      uint8_t width, uint8_t height, DrawMode mode = pixel_set);
 
     /**
            * @brief draws a bitmap to the screen buffer in the WBMP format
            *
            * @param wbmp pointer to the start of the bitmap
-           * @param col x coordinate of upper left (0-83)
-           * @param row y coordinate of upper left (0-47)
+           * @param x x coordinate of upper left (0-83)
+           * @param y y coordinate of upper left (0-47)
            */
-    void draw_wbitmap(const uint8_t *wbmp, uint8_t col, uint8_t row,
+    void draw_wbitmap(const uint8_t *wbmp, uint8_t x, uint8_t y,
                       DrawMode mode = pixel_set);
 
     /**
           *@brief draws a line to the screen buffer
           *
-          *@param col0 column of first point
-          *@param col1 column of second point
-          *@param row0 row of first point
-          *@param row1 row of second point
+          *@param x0 xumn of first point
+          *@param y0 y of first point
+          *@param x1 xumn of second point
+          *@param y1 y of second point
           *@param mode  draw mode (see above)
           */
-    void draw_line(uint8_t col0, uint8_t col1, uint8_t row0, uint8_t row1,
+    void draw_line(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1,
                    DrawMode mode = pixel_set);
 
     /**
            * @brief draws a filled rectangle
            *
-           * @param col1 column of the first point
-           * @param row1 row of the first point
-           * @param col2 column of the second point
-           * @param row2 row of the second point
+           * @param x0 xumn of the first point
+           * @param y0 y of the first point
+           * @param x1 xumn of the second point
+           * @param y1 y of the second point
            * @param mode  draw mode (see above)
            */
-    void draw_rect(uint8_t col1, uint8_t row1, uint8_t col2, uint8_t row2,
+    void draw_rect(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1,
                    FillMode fillMode = solid, DrawMode drawMode = pixel_set);
 
   private:
@@ -285,7 +285,7 @@ class Nokia5110 {
     DigitalOut *_rst;
     DigitalOut *_dc;
 
-    uint8_t get_fill_value(uint8_t col, uint8_t row, FillMode fillMode);
+    uint8_t get_fill_value(uint8_t x, uint8_t y, FillMode fillMode);
 };
 
 extern const uint8_t font[480];
