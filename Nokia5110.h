@@ -46,15 +46,7 @@
 #define LCD_SETBIAS 0x10
 #define LCD_SETVOP 0x80
 
-/**
- * @brief Mode for drawing pixels
- */
-enum DrawMode { pixel_set, pixel_or, pixel_xor, pixel_clear };
-
-/**
- * @brief Mode for filling shapes
- */
-enum FillMode { solid, none, hatch, checkerboard, stripes_horiz, stripes_vert };
+typedef uint8_t pattern_t[8];
 
 /**
  * @brief An API for using the Nokia 5110 display or other PCD8544-based
@@ -70,6 +62,37 @@ enum FillMode { solid, none, hatch, checkerboard, stripes_horiz, stripes_vert };
  */
 class Nokia5110 {
   public:
+    /**
+           * @brief Mode for drawing pixels
+           */
+    enum Mode {
+        pixel_copy = 0x0,
+        pixel_or   = 0x1,
+        pixel_xor  = 0x2,
+        pixel_clr  = 0x3,
+        pixel_invt = 0x4,
+        pixel_nor  = 0x5,
+        pixel_xnor = 0x6,
+        pixel_nclr = 0x7
+    };
+
+    // patterns
+    static const pattern_t pattern_black;
+    static const pattern_t pattern_dkgrey;
+    static const pattern_t pattern_grey;
+    static const pattern_t pattern_ltgrey;
+    static const pattern_t pattern_white;
+
+    /**
+           * @brief Mode for filling shapes
+           */
+    enum FillMode { solid,
+                    none,
+                    hatch,
+                    checkerboard,
+                    stripes_horiz,
+                    stripes_vert };
+
     /**
            * @brief constructor
            *
@@ -175,11 +198,20 @@ class Nokia5110 {
            *
            * @param x x coordinate (0-83)
            * @param y y coordinate (0-47)
-           * @param value pixel value. 0 = white, 1 = black in normal mode
-           * @param drawMode  draw mode (see above)
+           * @param pattern pattern to use
+           * @param mode  draw mode (see above)
            */
-    void draw_pixel(uint8_t x, uint8_t y, uint8_t value,
-                    DrawMode drawMode = pixel_set);
+    void draw_pixel(uint8_t x, uint8_t y, const pattern_t pattern, Mode mode = pixel_copy);
+
+    /**
+           * @brief draws a pixel to the screen buffer
+           *
+           * @param x x coordinate (0-83)
+           * @param y y coordinate (0-47)
+           * @param value pixel value. 0 = white, 1 = black in normal mode
+           * @param mode  draw mode (see above)
+           */
+    void draw_pixel(uint8_t x, uint8_t y, bool value, Mode mode = pixel_copy);
 
     /**
            * @brief gets the value of a pixel from the screen buffer
@@ -218,8 +250,7 @@ class Nokia5110 {
            * @param y y coordinate of upper left (0-47)
            * @param mode  draw mode (see above)
            */
-    void print_char(char c, uint8_t x, uint8_t y,
-                    DrawMode mode = pixel_set);
+    void print_char(char c, uint8_t x, uint8_t y, Mode mode = pixel_copy);
 
     /**
            * @brief prints a string to the screen buffer
@@ -229,8 +260,7 @@ class Nokia5110 {
            * @param y y coordinate of upper left (0-47)
            * @param mode  draw mode (see above)
            */
-    void print_string(const char *str, uint8_t x, uint8_t y,
-                      DrawMode mode = pixel_set);
+    void print_string(const char *str, uint8_t x, uint8_t y, Mode mode = pixel_copy);
 
     /**
            * @brief draws a bitmap to the screen buffer in an unpadded format
@@ -241,8 +271,7 @@ class Nokia5110 {
            * @param width bitmap width in pixels
            * @param height bitmap height in pixels
            */
-    void draw_bitmap(const uint8_t *bmp, uint8_t x, uint8_t y,
-                     uint8_t width, uint8_t height, DrawMode mode = pixel_set);
+    void draw_bitmap(const uint8_t *bmp, uint8_t x, uint8_t y, uint8_t width, uint8_t height, Mode mode = pixel_copy);
 
     /**
            * @brief draws a bitmap to the screen buffer in the WBMP format
@@ -251,32 +280,99 @@ class Nokia5110 {
            * @param x x coordinate of upper left (0-83)
            * @param y y coordinate of upper left (0-47)
            */
-    void draw_wbitmap(const uint8_t *wbmp, uint8_t x, uint8_t y,
-                      DrawMode mode = pixel_set);
+    void draw_wbitmap(const uint8_t *wbmp, uint8_t x, uint8_t y, Mode mode = pixel_copy);
 
     /**
           *@brief draws a line to the screen buffer
           *
-          *@param x0 xumn of first point
-          *@param y0 y of first point
-          *@param x1 xumn of second point
-          *@param y1 y of second point
+          *@param x0 x coordinate of first point
+          *@param y0 y coordinate of first point
+          *@param x1 x coordinate of second point
+          *@param y1 y coordinate of second point
           *@param mode  draw mode (see above)
           */
     void draw_line(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1,
-                   DrawMode mode = pixel_set);
+                   const pattern_t pattern = pattern_black,
+                   Mode mode               = pixel_copy);
 
     /**
-           * @brief draws a filled rectangle
+          *@brief draws a horizontal line to the screen buffer
+          *
+          *@param x0 x coordinate of first point
+          *@param x1 x coordinate of second point
+          *@param y  y coordinate of the line
+          *@param mode  draw mode (see above)
+          */
+    void draw_hline(uint8_t x0, uint8_t x1, uint8_t y,
+                    const pattern_t pattern = pattern_black,
+                    Mode mode               = pixel_copy);
+
+    /**
+          *@brief draws a vertical line to the screen buffer
+          *
+          *@param y0 y coordinate of first point
+          *@param y1 y coordinate of second point
+          *@param x  x coordinate of the line
+          *@param mode  draw mode (see above)
+          */
+    void draw_vline(uint8_t y0, uint8_t y1, uint8_t x,
+                    const pattern_t pattern = pattern_black,
+                    Mode mode               = pixel_copy);
+
+    /**
+           * @brief draws a rectangle to the screen buffer
            *
-           * @param x0 xumn of the first point
-           * @param y0 y of the first point
-           * @param x1 xumn of the second point
-           * @param y1 y of the second point
+           * @param x0 column of the first point
+           * @param y0 row of the first point
+           * @param x1 column of the second point
+           * @param y1 row of the second point
+           * @param pattern pattern to use
            * @param mode  draw mode (see above)
            */
     void draw_rect(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1,
-                   FillMode fillMode = solid, DrawMode drawMode = pixel_set);
+                   const pattern_t pattern = pattern_black,
+                   Mode mode               = pixel_copy);
+
+    /**
+           * @brief fills a rectangle in the screen buffer
+           *
+           * @param x0 column of the first point
+           * @param y0 row of the first point
+           * @param x1 column of the second point
+           * @param y1 row of the second point
+           * @param pattern pattern to use
+           * @param mode  draw mode (see above)
+           */
+    void fill_rect(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1,
+                   const pattern_t pattern = pattern_black,
+                   Mode mode               = pixel_copy);
+
+    /**
+           *@brief draws a circle to the screen buffer
+           * 
+           * @param cx x coordinate of the center
+           * @param cy y coordinate of the center
+           * @param r radius of the circle
+           * @param pattern pattern to use
+           * @param mode  draw mode (see above)
+           */
+    void draw_circle(uint8_t cx, uint8_t cy, uint8_t r,
+                     const pattern_t pattern = pattern_black,
+                     Mode mode               = pixel_copy);
+
+    /**
+           *@brief draws an ellipse to the screen buffer
+           * 
+           * @param cx x coordinate of the center
+           * @param cy y coordinate of the center
+           * @param a horizontal radius of the ellipse
+           * @param b vertical radius of the ellipse
+           * @param pattern pattern to use
+           * @param mode  draw mode (see above)
+           */
+    void draw_ellipse(uint8_t cx, uint8_t cy, uint8_t a, uint8_t b,
+                     const pattern_t pattern = pattern_black,
+                     Mode mode               = pixel_copy);
 
   private:
     SPI *_lcd_SPI;
@@ -285,9 +381,7 @@ class Nokia5110 {
     DigitalOut *_rst;
     DigitalOut *_dc;
 
-    uint8_t get_fill_value(uint8_t x, uint8_t y, FillMode fillMode);
+    static const uint8_t font[480];
 };
-
-extern const uint8_t font[480];
 
 #endif
