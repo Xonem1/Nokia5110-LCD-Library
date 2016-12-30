@@ -1,7 +1,7 @@
 #ifndef NOKIA5110_H
 #define NOKIA5110_H
 
-#include "mbed.h"
+#include <mbed.h>
 #include <stdbool.h>
 
 // 4MHz clock frequency, maximum of the display
@@ -61,17 +61,17 @@ typedef uint8_t pattern_t[8];
  *
  */
 class Nokia5110 {
-  public:
+public:
     /**
            * @brief Mode for drawing pixels
            */
     enum Mode {
         pixel_copy = 0x0,
-        pixel_or   = 0x1,
-        pixel_xor  = 0x2,
-        pixel_clr  = 0x3,
+        pixel_or = 0x1,
+        pixel_xor = 0x2,
+        pixel_clr = 0x3,
         pixel_invt = 0x4,
-        pixel_nor  = 0x5,
+        pixel_nor = 0x5,
         pixel_xnor = 0x6,
         pixel_nclr = 0x7
     };
@@ -86,12 +86,14 @@ class Nokia5110 {
     /**
            * @brief Mode for filling shapes
            */
-    enum FillMode { solid,
-                    none,
-                    hatch,
-                    checkerboard,
-                    stripes_horiz,
-                    stripes_vert };
+    enum FillMode {
+        solid,
+        none,
+        hatch,
+        checkerboard,
+        stripes_horiz,
+        stripes_vert
+    };
 
     /**
            * @brief constructor
@@ -293,7 +295,7 @@ class Nokia5110 {
           */
     void draw_line(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1,
                    const pattern_t pattern = pattern_black,
-                   Mode mode               = pixel_copy);
+                   Mode mode = pixel_copy);
 
     /**
           *@brief draws a horizontal line to the screen buffer
@@ -305,7 +307,7 @@ class Nokia5110 {
           */
     void draw_hline(uint8_t x0, uint8_t x1, uint8_t y,
                     const pattern_t pattern = pattern_black,
-                    Mode mode               = pixel_copy);
+                    Mode mode = pixel_copy);
 
     /**
           *@brief draws a vertical line to the screen buffer
@@ -331,7 +333,7 @@ class Nokia5110 {
            */
     void draw_rect(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1,
                    const pattern_t pattern = pattern_black,
-                   Mode mode               = pixel_copy);
+                   Mode mode = pixel_copy);
 
     /**
            * @brief fills a rectangle in the screen buffer
@@ -345,7 +347,7 @@ class Nokia5110 {
            */
     void fill_rect(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1,
                    const pattern_t pattern = pattern_black,
-                   Mode mode               = pixel_copy);
+                   Mode mode = pixel_copy);
 
     /**
            *@brief draws a circle to the screen buffer
@@ -358,7 +360,20 @@ class Nokia5110 {
            */
     void draw_circle(uint8_t cx, uint8_t cy, uint8_t r,
                      const pattern_t pattern = pattern_black,
-                     Mode mode               = pixel_copy);
+                     Mode mode = pixel_copy);
+
+    /**
+           *@brief fills a circle in the screen buffer
+           *
+           * @param cx x coordinate of the center
+           * @param cy y coordinate of the center
+           * @param r radius of the circle
+           * @param pattern pattern to use
+           * @param mode  draw mode (see above)
+           */
+    void fill_circle(uint8_t cx, uint8_t cy, uint8_t r,
+                     const pattern_t pattern = pattern_black,
+                     Mode mode = pixel_copy);
 
     /**
            *@brief draws an ellipse to the screen buffer
@@ -371,10 +386,10 @@ class Nokia5110 {
            * @param mode  draw mode (see above)
            */
     void draw_ellipse(uint8_t cx, uint8_t cy, uint8_t a, uint8_t b,
-                     const pattern_t pattern = pattern_black,
-                     Mode mode               = pixel_copy);
+                      const pattern_t pattern = pattern_black,
+                      Mode mode = pixel_copy);
 
-  private:
+private:
     SPI *_lcd_SPI;
 
     DigitalOut *_sce;

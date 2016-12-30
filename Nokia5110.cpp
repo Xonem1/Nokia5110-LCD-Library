@@ -10,7 +10,7 @@ Nokia5110::Nokia5110(PinName sce, PinName rst, PinName dc, PinName dn, PinName s
 
     _sce = new DigitalOut(sce, 1);
     _rst = new DigitalOut(rst, 1);
-    _dc  = new DigitalOut(dc, 0);
+    _dc = new DigitalOut(dc, 0);
 }
 
 void Nokia5110::init(uint8_t con, uint8_t bias) {
@@ -46,8 +46,9 @@ void Nokia5110::send_data(uint8_t data) {
 }
 
 void Nokia5110::set_contrast(uint8_t con) {
-    if (con > 0x7f)
+    if (con > 0x7f) {
         con = 0x7f;
+    }
 
     send_command(LCD_FUNCTIONSET | LCD_EXTENDEDINSTRUCTION);
     send_command(LCD_SETVOP | con);
@@ -55,8 +56,9 @@ void Nokia5110::set_contrast(uint8_t con) {
 }
 
 void Nokia5110::set_bias(uint8_t bias) {
-    if (bias > 0x08)
+    if (bias > 0x08) {
         bias = 0x08;
+    }
 
     send_command(LCD_FUNCTIONSET | LCD_EXTENDEDINSTRUCTION);
     send_command(LCD_SETBIAS | bias);
@@ -64,8 +66,9 @@ void Nokia5110::set_bias(uint8_t bias) {
 }
 
 void Nokia5110::set_mode(uint8_t mode) {
-    if (mode > 0x08)
+    if (mode > 0x08) {
         mode = 0x08;
+    }
 
     send_command(LCD_DISPLAYCONTROL | mode);
 }
@@ -111,7 +114,7 @@ void Nokia5110::draw_pixel(uint8_t x, uint8_t y, const pattern_t pattern, Mode m
 
 void Nokia5110::draw_pixel(uint8_t x, uint8_t y, bool value, Mode mode) {
     if (mode & 0x4) {
-        mode  = (Mode)(mode & 0x3);
+        mode = (Mode) (mode & 0x3);
         value = !value;
     }
 
@@ -121,22 +124,26 @@ void Nokia5110::draw_pixel(uint8_t x, uint8_t y, bool value, Mode mode) {
     switch (mode) {
     case pixel_copy:
     default:
-        if (value)
+        if (value) {
             buffer[x + (y / 8) * LCD_WIDTH] |= (1 << (y % 8));
-        else
+        } else {
             buffer[x + (y / 8) * LCD_WIDTH] &= ~(1 << (y % 8));
+        }
         break;
     case pixel_or:
-        if (value)
+        if (value) {
             buffer[x + (y / 8) * LCD_WIDTH] |= (1 << (y % 8));
+        }
         break;
     case pixel_xor:
-        if (value)
+        if (value) {
             buffer[x + (y / 8) * LCD_WIDTH] ^= (1 << (y % 8));
+        }
         break;
     case pixel_clr:
-        if (value)
+        if (value) {
             buffer[x + (y / 8) * LCD_WIDTH] &= ~(1 << (y % 8));
+        }
         break;
     }
 }
@@ -203,11 +210,13 @@ void Nokia5110::draw_bitmap(const uint8_t *bmp, uint8_t x, uint8_t y, uint8_t wi
 }
 
 void Nokia5110::draw_wbitmap(const uint8_t *wbmp, uint8_t x, uint8_t y, Mode mode) {
-    if (*wbmp++ != 0x00) // image type, only supports 0
+    if (*wbmp++ != 0x00) { // image type, only supports 0
         return;
-    if (*wbmp++ != 0x00) // always 0
+    }
+    if (*wbmp++ != 0x00) { // always 0
         return;
-    uint8_t width  = *wbmp++; // image width in pixels
+    }
+    uint8_t width = *wbmp++; // image width in pixels
     uint8_t height = *wbmp++; // image height in pixels
 
     uint8_t mask = 0x80;
@@ -248,7 +257,7 @@ void Nokia5110::draw_line(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1, const 
     int8_t y_mult = (y0 > y1) ? -1 : 1;
 
     if (dy < dx) { //positive slope
-        int8_t d  = (2 * dy) - dx;
+        int8_t d = (2 * dy) - dx;
         uint8_t y = 0;
         for (uint8_t x = 0; x <= dx; x++) {
             draw_pixel(x0 + (x_mult * x), y0 + (y_mult * y), pattern, mode);
@@ -259,7 +268,7 @@ void Nokia5110::draw_line(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1, const 
             d += dy;
         }
     } else { //negative slope
-        int8_t d  = (2 * dx) - dy;
+        int8_t d = (2 * dx) - dy;
         uint8_t x = 0;
         for (uint8_t y = 0; y <= dy; y++) {
             draw_pixel(x0 + (x_mult * x), y0 + (y_mult * y), pattern, mode);
@@ -275,8 +284,8 @@ void Nokia5110::draw_line(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1, const 
 void Nokia5110::draw_hline(uint8_t x0, uint8_t x1, uint8_t y, const pattern_t pattern, Mode mode) {
     if (x0 > x1) {
         uint8_t tmp = x0;
-        x0          = x1;
-        x1          = tmp;
+        x0 = x1;
+        x1 = tmp;
     }
 
     for (uint8_t x = x0; x <= x1; x++) {
@@ -287,8 +296,8 @@ void Nokia5110::draw_hline(uint8_t x0, uint8_t x1, uint8_t y, const pattern_t pa
 void Nokia5110::draw_vline(uint8_t y0, uint8_t y1, uint8_t x, const pattern_t pattern, Mode mode) {
     if (y0 > y1) {
         uint8_t tmp = y0;
-        y0          = y1;
-        y1          = tmp;
+        y0 = y1;
+        y1 = tmp;
     }
 
     for (uint8_t y = y0; y <= y1; y++) {
@@ -306,14 +315,14 @@ void Nokia5110::draw_rect(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1, const 
 void Nokia5110::fill_rect(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1, const pattern_t pattern, Mode mode) {
     if (x0 > x1) {
         uint8_t tmp = x0;
-        x0          = x1;
-        x1          = tmp;
+        x0 = x1;
+        x1 = tmp;
     }
 
     if (y0 > y1) {
         uint8_t tmp = y0;
-        y0          = y1;
-        y1          = tmp;
+        y0 = y1;
+        y1 = tmp;
     }
 
     for (uint8_t x = x0; x <= x1; x++) {
@@ -328,8 +337,8 @@ void Nokia5110::draw_circle(uint8_t cx, uint8_t cy, uint8_t r, const pattern_t p
         return;
     }
 
-    uint8_t x  = r; // start at the cardinal points of the circle
-    uint8_t y  = 0;
+    uint8_t x = r; // start at the cardinal points of the circle
+    uint8_t y = 0;
     int8_t err = 0; // difference of true radius squared and expected radius squared
 
     // draw the pixels in the cardinal directions
@@ -339,7 +348,7 @@ void Nokia5110::draw_circle(uint8_t cx, uint8_t cy, uint8_t r, const pattern_t p
     draw_pixel(cx, cy - r, pattern, mode);
 
     // magic Bresenham voodoo
-    while (x >= y) {
+    while (x > y) {
         // go inward diagonally
         x--;
         y++;
@@ -353,14 +362,56 @@ void Nokia5110::draw_circle(uint8_t cx, uint8_t cy, uint8_t r, const pattern_t p
 
         // draw each octant
         draw_pixel(cx + x, cy + y, pattern, mode);
-        draw_pixel(cx + y, cy + x, pattern, mode);
         draw_pixel(cx - x, cy + y, pattern, mode);
-        draw_pixel(cx - y, cy + x, pattern, mode);
         draw_pixel(cx + x, cy - y, pattern, mode);
-        draw_pixel(cx + y, cy - x, pattern, mode);
         draw_pixel(cx - x, cy - y, pattern, mode);
-        draw_pixel(cx - y, cy - x, pattern, mode);
+        if (x > y) {
+            draw_pixel(cx + y, cy + x, pattern, mode);
+            draw_pixel(cx + y, cy - x, pattern, mode);
+            draw_pixel(cx - y, cy + x, pattern, mode);
+            draw_pixel(cx - y, cy - x, pattern, mode);
+        }
     }
+}
+
+void Nokia5110::fill_circle(uint8_t cx, uint8_t cy, uint8_t r, const uint8_t *pattern, Nokia5110::Mode mode) {
+    if (!r) { // you cant have a radius of 0, silly
+        return;
+    }
+
+    uint8_t x = r; // start at the cardinal points of the circle
+    uint8_t y = 0;
+    uint8_t last_x = 0;
+    uint8_t last_y = 0;
+    int8_t err = 0; // difference of true radius squared and expected radius squared
+
+    draw_vline(cy - r, cy + r, cx, pattern, mode);
+    // magic Bresenham voodoo
+    while (x > y) {
+        last_x = x;
+        last_y = y;
+        // go inward diagonally
+        x--;
+        y++;
+        err -= x - y;
+
+        // if we are inside the circle, increment x
+        if (err < 0) {
+            err += x;
+            x++;
+        }
+
+        if (x != last_x) {
+            draw_vline(cy - last_y, cy + last_y, cx + last_x, pattern, mode);
+            draw_vline(cy - last_y, cy + last_y, cx - last_x, pattern, mode);
+        }
+        if (y != last_y) {
+            draw_vline(cy - last_x, cy + last_x, cx + last_y, pattern, mode);
+            draw_vline(cy - last_x, cy + last_x, cx - last_y, pattern, mode);
+        }
+    }
+    draw_vline(cy - y, cy + y, cx + x, pattern, mode);
+    draw_vline(cy - y, cy + y, cx - x, pattern, mode);
 }
 
 void Nokia5110::draw_ellipse(uint8_t cx, uint8_t cy, uint8_t a, uint8_t b, const pattern_t pattern, Mode mode) {
@@ -371,10 +422,10 @@ void Nokia5110::draw_ellipse(uint8_t cx, uint8_t cy, uint8_t a, uint8_t b, const
     uint16_t two_a_sqr = 2 * a * a;
     uint16_t two_b_sqr = 2 * b * b;
 
-    int8_t x    = a; // start at the cardinal points
-    int8_t y    = 0;
-    int16_t dx  = b * b * (1 - (2 * a));
-    int16_t dy  = a * a;
+    int8_t x = a; // start at the cardinal points
+    int8_t y = 0;
+    int16_t dx = b * b * (1 - (2 * a));
+    int16_t dy = a * a;
     int16_t err = 0;
 
     uint16_t stop_x = two_b_sqr * a;
@@ -401,8 +452,8 @@ void Nokia5110::draw_ellipse(uint8_t cx, uint8_t cy, uint8_t a, uint8_t b, const
     }
     uint8_t last_y = y;
     uint8_t last_x = x;
-    x  = 0;
-    y  = b;
+    x = 0;
+    y = b;
     dx = b * b;
     dy = a * a * (1 - (2 * b));
 
@@ -429,11 +480,15 @@ void Nokia5110::draw_ellipse(uint8_t cx, uint8_t cy, uint8_t a, uint8_t b, const
 }
 
 // patterns
-const pattern_t Nokia5110::pattern_black  = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
+const pattern_t Nokia5110::pattern_black = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
+
 const pattern_t Nokia5110::pattern_dkgrey = {0xEE, 0xBB, 0xEE, 0xBB, 0xEE, 0xBB, 0xEE, 0xBB};
-const pattern_t Nokia5110::pattern_grey   = {0xAA, 0x55, 0xAA, 0x55, 0xAA, 0x55, 0xAA, 0x55};
+
+const pattern_t Nokia5110::pattern_grey = {0xAA, 0x55, 0xAA, 0x55, 0xAA, 0x55, 0xAA, 0x55};
+
 const pattern_t Nokia5110::pattern_ltgrey = {0x11, 0x44, 0x11, 0x44, 0x11, 0x44, 0x11, 0x44};
-const pattern_t Nokia5110::pattern_white  = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+
+const pattern_t Nokia5110::pattern_white = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
 
 // font from
 // https://developer.mbed.org/users/eencae/code/N5110/docs/tip/N5110_8h_source.html
