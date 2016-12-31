@@ -1,4 +1,6 @@
 #include "Nokia5110.h"
+#include "isqrt.h"
+#include <math.h>
 
 // the memory buffer for the LCD
 uint8_t buffer[LCD_BYTES];
@@ -419,49 +421,59 @@ void Nokia5110::draw_ellipse(uint8_t cx, uint8_t cy, uint8_t a, uint8_t b, const
         return;
     }
 
+    draw_pixel(cx + a, cy, pattern, mode);
+    draw_pixel(cx - a, cy, pattern, mode);
+    draw_pixel(cx, cy + b, pattern, mode);
+    draw_pixel(cx, cy - b, pattern, mode);
+
     uint16_t two_a_sqr = 2 * a * a;
     uint16_t two_b_sqr = 2 * b * b;
 
     int8_t x = a; // start at the cardinal points
-    int8_t y = 0;
+    int8_t y = 1;
     int16_t dx = b * b * (1 - (2 * a));
-    int16_t dy = a * a;
-    int16_t err = 0;
+    int16_t dy = 3 * a * a;
+    int16_t err = a * a;
+    uint8_t stop_x = a * a / (isqrt(a * a + b));
 
-    uint16_t stop_x = two_b_sqr * a;
-    uint16_t stop_y = 0;
+    if (dx + two_a_sqr > 0) {
+        x--;
+        err += dx;
+        dx += two_b_sqr;
+    }
 
     // section 1 (left and right)
-    while (stop_x >= stop_y) {
+    while (x >= stop_x) {
         draw_pixel(cx + x, cy + y, pattern, mode);
         draw_pixel(cx - x, cy + y, pattern, mode);
         draw_pixel(cx + x, cy - y, pattern, mode);
         draw_pixel(cx - x, cy - y, pattern, mode);
 
         y++;
-        stop_y += two_a_sqr;
         err += dy;
         dy += two_a_sqr;
 
         if ((err * 2) + dx > 0) {
             x--;
-            stop_x -= two_b_sqr;
             err += dx;
             dx += two_b_sqr;
         }
     }
-    uint8_t last_y = y;
-    uint8_t last_x = x;
-    x = 0;
-    y = b;
-    dx = b * b;
-    dy = a * a * (1 - (2 * b));
 
-    stop_x = 0;
-    stop_y = two_a_sqr * b;
+    x = 1;
+    y = b;
+    dx = 3 * b * b;
+    dy = a * a * (1 - (2 * b));
+    err = b * b;
+
+    if (dy + two_b_sqr > 0) {
+        y--;
+        err += dy;
+        dy += two_a_sqr;
+    }
 
     // section 2 (top and bottom)
-    while (y >= last_y || x <= last_x) {
+    while (x < stop_x) {
         draw_pixel(cx + x, cy + y, pattern, mode);
         draw_pixel(cx - x, cy + y, pattern, mode);
         draw_pixel(cx + x, cy - y, pattern, mode);
