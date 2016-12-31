@@ -460,6 +460,7 @@ void Nokia5110::draw_ellipse(uint8_t cx, uint8_t cy, uint8_t a, uint8_t b, const
         }
     }
 
+    uint8_t stop_y = y;
     x = 1;
     y = b;
     dx = 3 * b * b;
@@ -478,6 +479,81 @@ void Nokia5110::draw_ellipse(uint8_t cx, uint8_t cy, uint8_t a, uint8_t b, const
         draw_pixel(cx - x, cy + y, pattern, mode);
         draw_pixel(cx + x, cy - y, pattern, mode);
         draw_pixel(cx - x, cy - y, pattern, mode);
+
+        x++;
+        err += dx;
+        dx += two_b_sqr;
+
+        if ((err * 2) + dy > 0) {
+            y--;
+            err += dy;
+            dy += two_a_sqr;
+        }
+    }
+
+    if (y >= stop_y) {
+        draw_vline(cy + y, cy + stop_y, cx + (x - 1), pattern, mode);
+        draw_vline(cy - y, cy - stop_y, cx + (x - 1), pattern, mode);
+        draw_vline(cy + y, cy + stop_y, cx - (x - 1), pattern, mode);
+        draw_vline(cy - y, cy - stop_y, cx - (x - 1), pattern, mode);
+    }
+}
+
+void Nokia5110::fill_ellipse(uint8_t cx, uint8_t cy, uint8_t a, uint8_t b, const pattern_t pattern, Nokia5110::Mode mode) {
+    if (!a || !b) { // you cant have a radius of 0, silly
+        return;
+    }
+
+    draw_vline(cy + b, cy - b, cx, pattern, mode);
+
+    uint16_t two_a_sqr = 2 * a * a;
+    uint16_t two_b_sqr = 2 * b * b;
+
+    int8_t x = a; // start at the cardinal points
+    int8_t y = 1;
+    int16_t dx = b * b * (1 - (2 * a));
+    int16_t dy = 3 * a * a;
+    int16_t err = a * a;
+    uint8_t stop_x = a * a / (isqrt(a * a + b));
+
+    if (dx + two_a_sqr > 0) {
+        x--;
+        err += dx;
+        dx += two_b_sqr;
+    }
+
+    // section 1 (left and right)
+    while (x >= stop_x) {
+        y++;
+        err += dy;
+        dy += two_a_sqr;
+
+        if ((err * 2) + dx > 0) {
+            draw_vline(cy + (y - 1), cy - (y - 1), cx + x, pattern, mode);
+            draw_vline(cy + (y - 1), cy - (y - 1), cx - x, pattern, mode);
+
+            x--;
+            err += dx;
+            dx += two_b_sqr;
+        }
+    }
+
+    x = 1;
+    y = b;
+    dx = 3 * b * b;
+    dy = a * a * (1 - (2 * b));
+    err = b * b;
+
+    if (dy + two_b_sqr > 0) {
+        y--;
+        err += dy;
+        dy += two_a_sqr;
+    }
+
+    // section 2 (top and bottom)
+    while (x < stop_x) {
+        draw_vline(cy + y, cy - y, cx + x, pattern, mode);
+        draw_vline(cy + y, cy - y, cx - x, pattern, mode);
 
         x++;
         err += dx;

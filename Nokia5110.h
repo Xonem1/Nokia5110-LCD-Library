@@ -319,7 +319,7 @@ public:
           */
     void draw_vline(uint8_t y0, uint8_t y1, uint8_t x,
                     const pattern_t pattern = pattern_black,
-                    Mode mode               = pixel_copy);
+                    Mode mode = pixel_copy);
 
     /**
            * @brief draws a rectangle to the screen buffer
@@ -387,6 +387,20 @@ public:
            */
     void draw_ellipse(uint8_t cx, uint8_t cy, uint8_t a, uint8_t b,
                       const pattern_t pattern = pattern_black,
+                      Mode mode = pixel_copy);
+
+    /**
+           *@brief fills an ellipse on the screen buffer
+           *
+           * @param cx x coordinate of the center
+           * @param cy y coordinate of the center
+           * @param a horizontal radius of the ellipse
+           * @param b vertical radius of the ellipse
+           * @param pattern pattern to use
+           * @param mode  draw mode (see above)
+           */
+    void fill_ellipse(uint8_t cx, uint8_t cy, uint8_t a, uint8_t b,
+                      const pattern_t = pattern_black,
                       Mode mode = pixel_copy);
 
 private:
