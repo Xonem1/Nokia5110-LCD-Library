@@ -506,7 +506,7 @@ void Nokia5110::draw_ellipse(uint8_t cx, uint8_t cy, uint8_t a, uint8_t b, const
     }
 }
 
-void Nokia5110::fill_ellipse(uint8_t cx, uint8_t cy, uint8_t a, uint8_t b, const pattern_t pattern, Nokia5110::Mode mode) {
+void Nokia5110::fill_ellipse(uint8_t cx, uint8_t cy, uint8_t a, uint8_t b, const pattern_t pattern, Mode mode) {
     if (!a) { // you cant have a radius of 0, silly
         draw_vline(cy - b, cy + b, cx, pattern, mode);
         return;
