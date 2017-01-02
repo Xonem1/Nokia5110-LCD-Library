@@ -79,8 +79,8 @@ typedef uint8_t pattern_t[8];
 class Nokia5110 {
 public:
     /**
-           * @brief Mode for drawing pixels
-           */
+     * @brief Mode for drawing pixels
+     */
     enum Mode {
         pixel_copy = 0x0,
         pixel_or = 0x1,
@@ -100,8 +100,8 @@ public:
     static const pattern_t pattern_white;
 
     /**
-           * @brief Mode for filling shapes
-           */
+     * @brief Mode for filling shapes
+     */
     enum FillMode {
         solid,
         none,
@@ -112,309 +112,309 @@ public:
     };
 
     /**
-           * @brief constructor
-           *
-           * @param sce Chip Enable pin
-           * @param rst Reset pin
-           * @param dc D/C pin
-           * @param dn data pin (MOSI)
-           * @param sclk clock pin (SCLK)
-           */
+     * @brief constructor
+     *
+     * @param sce Chip Enable pin
+     * @param rst Reset pin
+     * @param dc D/C pin
+     * @param dn data pin (MOSI)
+     * @param sclk clock pin (SCLK)
+     */
     Nokia5110(PinName sce, PinName rst, PinName dc, PinName dn, PinName sclk);
 
     /**
-           * @brief initialize the display with given contrast and bias.
-           *
-           * @param con contrast for the display
-           * @param bias bias for the display, should be 0x04 for the nokia 5110
+     * @brief initialize the display with given contrast and bias.
+     *
+     * @param con contrast for the display
+     * @param bias bias for the display, should be 0x04 for the nokia 5110
      * display. only change for other PCD8544 displays
-           */
+     */
     void init(uint8_t con = 40, uint8_t bias = 0x04);
 
     /**
-           * @brief reset the display's memory
-           */
+     * @brief reset the display's memory
+     */
     void reset();
 
     /**
-           * @brief send a command to the display
-           *
-           * @param cmd command to send
-           */
+     * @brief send a command to the display
+     *
+     * @param cmd command to send
+     */
     void send_command(uint8_t cmd);
 
     /**
-           * @brief send a byte of data to the display
-           *
-           * @param data data to send
-           */
+     * @brief send a byte of data to the display
+     *
+     * @param data data to send
+     */
     void send_data(uint8_t data);
 
     /**
-           * @brief sets the display's contrast
-           *
-           * @param con contrast, usually between 40 and 60 depending on your
+     * @brief sets the display's contrast
+     *
+     * @param con contrast, usually between 40 and 60 depending on your
      * display
-           */
+     */
     void set_contrast(uint8_t con);
 
     /**
-           * @brief sets the dispay's bias
-           *
-           * @param bias bias, should be 0x4 for the Nokia 5110 display
-           */
+     * @brief sets the dispay's bias
+     *
+     * @param bias bias, should be 0x4 for the Nokia 5110 display
+     */
     void set_bias(uint8_t bias);
 
     /**
-           * @brief sets the display's display mode
-           *
-           * @param mode display mode (Blank, inverted, allon or normal)
-           */
+     * @brief sets the display's display mode
+     *
+     * @param mode display mode (Blank, inverted, allon or normal)
+     */
     void set_mode(uint8_t mode);
 
     /**
-           * @brief turns the display on or off
-           *
-           * @param pow power, 0 = off, 1 = on
-           */
+     * @brief turns the display on or off
+     *
+     * @param pow power, 0 = off, 1 = on
+     */
     void set_power(uint8_t pow);
 
     /**
-           * @brief sets the X value of the cursor
-           *
-           * @param col x coordinate (0-83)
-           */
+     * @brief sets the X value of the cursor
+     *
+     * @param col x coordinate (0-83)
+     */
     void set_column(uint8_t col);
 
     /**
-           * @brief sets the Y value of the cursor
-           *
-           * @param bank memory bank (0-5)
-           */
+     * @brief sets the Y value of the cursor
+     *
+     * @param bank memory bank (0-5)
+     */
     void set_bank(uint8_t bank);
 
     /**
-           * @brief sets the X and Y values of the cursor
-           *
-           * @param col x coordinate (0-83)
-           * @param bank memory bank (0-5)
-           */
+     * @brief sets the X and Y values of the cursor
+     *
+     * @param col x coordinate (0-83)
+     * @param bank memory bank (0-5)
+     */
     void set_cursor(uint8_t col, uint8_t bank);
 
     /**
-           * @brief clears the screen buffer
-           */
+     * @brief clears the screen buffer
+     */
     void clear_buffer();
 
     /**
-           * @brief sends the screen buffer to the display
-           */
+     * @brief sends the screen buffer to the display
+     */
     void display();
 
     /**
-           * @brief draws a pixel to the screen buffer
-           *
-           * @param x x coordinate (0-83)
-           * @param y y coordinate (0-47)
-           * @param pattern pattern to use
-           * @param mode  draw mode (see above)
-           */
+     * @brief draws a pixel to the screen buffer
+     *
+     * @param x x coordinate (0-83)
+     * @param y y coordinate (0-47)
+     * @param pattern pattern to use
+     * @param mode  draw mode (see above)
+     */
     void draw_pixel(uint8_t x, uint8_t y, const pattern_t pattern, Mode mode = pixel_copy);
 
     /**
-           * @brief draws a pixel to the screen buffer
-           *
-           * @param x x coordinate (0-83)
-           * @param y y coordinate (0-47)
-           * @param value pixel value. 0 = white, 1 = black in normal mode
-           * @param mode  draw mode (see above)
-           */
+     * @brief draws a pixel to the screen buffer
+     *
+     * @param x x coordinate (0-83)
+     * @param y y coordinate (0-47)
+     * @param value pixel value. 0 = white, 1 = black in normal mode
+     * @param mode  draw mode (see above)
+     */
     void draw_pixel(uint8_t x, uint8_t y, bool value, Mode mode = pixel_copy);
 
     /**
-           * @brief gets the value of a pixel from the screen buffer
-           *
-           * @param x x coordinate (0-83)
-           * @param y y coordinate (0-47)
-           *
-           * @return value of the pixel, 0 if white
-           */
+     * @brief gets the value of a pixel from the screen buffer
+     *
+     * @param x x coordinate (0-83)
+     * @param y y coordinate (0-47)
+     *
+     * @return value of the pixel, 0 if white
+     */
     uint8_t get_pixel(uint8_t x, uint8_t bank);
 
     /**
-           * @brief draws a byte to the screen buffer
-           *
-           * @param x x coordinate, (0-83)
-           * @param bank memory bank (0-5)
-           * @param byte byte to draw
-           */
+     * @brief draws a byte to the screen buffer
+     *
+     * @param x x coordinate, (0-83)
+     * @param bank memory bank (0-5)
+     * @param byte byte to draw
+     */
     void draw_byte(uint8_t x, uint8_t bank, uint8_t byte);
 
     /**
-           * @brief gets a byte from the screen buffer
-           *
-           * @param x x coordinate (0-83)
-           * @param bank memory bank (0-5)
-           *
-           * @return byte from the screen buffer
-           */
+     * @brief gets a byte from the screen buffer
+     *
+     * @param x x coordinate (0-83)
+     * @param bank memory bank (0-5)
+     *
+     * @return byte from the screen buffer
+     */
     uint8_t get_byte(uint8_t x, uint8_t y);
 
     /**
-           * @brief prints a 7x5 character
-           *
-           * @param c character to draw
-           * @param x x coordinate of upper left (0-83)
-           * @param y y coordinate of upper left (0-47)
-           * @param mode  draw mode (see above)
-           */
+     * @brief prints a 7x5 character
+     *
+     * @param c character to draw
+     * @param x x coordinate of upper left (0-83)
+     * @param y y coordinate of upper left (0-47)
+     * @param mode  draw mode (see above)
+     */
     void print_char(char c, uint8_t x, uint8_t y, Mode mode = pixel_copy);
 
     /**
-           * @brief prints a string
-           *
-           * @param str string to print
-           * @param x x coordinate of upper left (0-83)
-           * @param y y coordinate of upper left (0-47)
-           * @param mode  draw mode (see above)
-           */
+     * @brief prints a string
+     *
+     * @param str string to print
+     * @param x x coordinate of upper left (0-83)
+     * @param y y coordinate of upper left (0-47)
+     * @param mode  draw mode (see above)
+     */
     void print_string(const char *str, uint8_t x, uint8_t y, Mode mode = pixel_copy);
 
     /**
-           * @brief draws a bitmap in an unpadded format
-           *
-           * @param bmp pointer to the start of the bitmap
-           * @param x x coordinate of upper left (0-83)
-           * @param y y coordinate of upper left (0-47)
-           * @param width bitmap width in pixels
-           * @param height bitmap height in pixels
-           */
+     * @brief draws a bitmap in an unpadded format
+     *
+     * @param bmp pointer to the start of the bitmap
+     * @param x x coordinate of upper left (0-83)
+     * @param y y coordinate of upper left (0-47)
+     * @param width bitmap width in pixels
+     * @param height bitmap height in pixels
+     */
     void draw_bitmap(const uint8_t *bmp, uint8_t x, uint8_t y, uint8_t width, uint8_t height, Mode mode = pixel_copy);
 
     /**
-           * @brief draws a bitmap in the WBMP format
-           *
-           * @param wbmp pointer to the start of the bitmap
-           * @param x x coordinate of upper left (0-83)
-           * @param y y coordinate of upper left (0-47)
-           */
+     * @brief draws a bitmap in the WBMP format
+     *
+     * @param wbmp pointer to the start of the bitmap
+     * @param x x coordinate of upper left (0-83)
+     * @param y y coordinate of upper left (0-47)
+     */
     void draw_wbitmap(const uint8_t *wbmp, uint8_t x, uint8_t y, Mode mode = pixel_copy);
 
     /**
-          *@brief draws a line
-          *
-          *@param x0 x coordinate of first point
-          *@param y0 y coordinate of first point
-          *@param x1 x coordinate of second point
-          *@param y1 y coordinate of second point
-          *@param mode  draw mode (see above)
-          */
+     * @brief draws a line
+     *
+     * @param x0 x coordinate of first point
+     * @param y0 y coordinate of first point
+     * @param x1 x coordinate of second point
+     * @param y1 y coordinate of second point
+     * @param mode  draw mode (see above)
+     */
     void draw_line(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1,
                    const pattern_t pattern = pattern_black,
                    Mode mode = pixel_copy);
 
     /**
-          *@brief draws a horizontal line
-          *
-          *@param x0 x coordinate of first point
-          *@param x1 x coordinate of second point
-          *@param y  y coordinate of the line
-          *@param mode  draw mode (see above)
-          */
+     * @brief draws a horizontal line
+     *
+     * @param x0 x coordinate of first point
+     * @param x1 x coordinate of second point
+     * @param y  y coordinate of the line
+     * @param mode  draw mode (see above)
+     */
     void draw_hline(uint8_t x0, uint8_t x1, uint8_t y,
                     const pattern_t pattern = pattern_black,
                     Mode mode = pixel_copy);
 
     /**
-          *@brief draws a vertical line
-          *
-          *@param y0 y coordinate of first point
-          *@param y1 y coordinate of second point
-          *@param x  x coordinate of the line
-          *@param mode  draw mode (see above)
-          */
+     * @brief draws a vertical line
+     *
+     * @param y0 y coordinate of first point
+     * @param y1 y coordinate of second point
+     * @param x  x coordinate of the line
+     * @param mode  draw mode (see above)
+     */
     void draw_vline(uint8_t y0, uint8_t y1, uint8_t x,
                     const pattern_t pattern = pattern_black,
                     Mode mode = pixel_copy);
 
     /**
-           * @brief draws an empty rectangle
-           *
-           * @param x0 column of the first point
-           * @param y0 row of the first point
-           * @param x1 column of the second point
-           * @param y1 row of the second point
-           * @param pattern pattern to use
-           * @param mode  draw mode (see above)
-           */
+     * @brief draws an empty rectangle
+     *
+     * @param x0 column of the first point
+     * @param y0 row of the first point
+     * @param x1 column of the second point
+     * @param y1 row of the second point
+     * @param pattern pattern to use
+     * @param mode  draw mode (see above)
+     */
     void draw_rect(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1,
                    const pattern_t pattern = pattern_black,
                    Mode mode = pixel_copy);
 
     /**
-           * @brief fills a rectangle
-           *
-           * @param x0 column of the first point
-           * @param y0 row of the first point
-           * @param x1 column of the second point
-           * @param y1 row of the second point
-           * @param pattern pattern to use
-           * @param mode  draw mode (see above)
-           */
+     * @brief fills a rectangle
+     *
+     * @param x0 column of the first point
+     * @param y0 row of the first point
+     * @param x1 column of the second point
+     * @param y1 row of the second point
+     * @param pattern pattern to use
+     * @param mode  draw mode (see above)
+     */
     void fill_rect(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1,
                    const pattern_t pattern = pattern_black,
                    Mode mode = pixel_copy);
 
     /**
-           *@brief draws an empty circle
-           * 
-           * @param cx x coordinate of the center
-           * @param cy y coordinate of the center
-           * @param r radius of the circle
-           * @param pattern pattern to use
-           * @param mode  draw mode (see above)
-           */
+     * @brief draws an empty circle
+     * 
+     * @param cx x coordinate of the center
+     * @param cy y coordinate of the center
+     * @param r radius of the circle
+     * @param pattern pattern to use
+     * @param mode  draw mode (see above)
+     */
     void draw_circle(uint8_t cx, uint8_t cy, uint8_t r,
                      const pattern_t pattern = pattern_black,
                      Mode mode = pixel_copy);
 
     /**
-           *@brief fills a circle
-           *
-           * @param cx x coordinate of the center
-           * @param cy y coordinate of the center
-           * @param r radius of the circle
-           * @param pattern pattern to use
-           * @param mode  draw mode (see above)
-           */
+     * @brief fills a circle
+     *
+     * @param cx x coordinate of the center
+     * @param cy y coordinate of the center
+     * @param r radius of the circle
+     * @param pattern pattern to use
+     * @param mode  draw mode (see above)
+     */
     void fill_circle(uint8_t cx, uint8_t cy, uint8_t r,
                      const pattern_t pattern = pattern_black,
                      Mode mode = pixel_copy);
 
     /**
-           *@brief draws an empty ellipse
-           * 
-           * @param cx x coordinate of the center
-           * @param cy y coordinate of the center
-           * @param a horizontal radius of the ellipse
-           * @param b vertical radius of the ellipse
-           * @param pattern pattern to use
-           * @param mode  draw mode (see above)
-           */
+     * @brief draws an empty ellipse
+     * 
+     * @param cx x coordinate of the center
+     * @param cy y coordinate of the center
+     * @param a horizontal radius of the ellipse
+     * @param b vertical radius of the ellipse
+     * @param pattern pattern to use
+     * @param mode  draw mode (see above)
+     */
     void draw_ellipse(uint8_t cx, uint8_t cy, uint8_t a, uint8_t b,
                       const pattern_t pattern = pattern_black,
                       Mode mode = pixel_copy);
 
     /**
-           *@brief fills an ellipse
-           *
-           * @param cx x coordinate of the center
-           * @param cy y coordinate of the center
-           * @param a horizontal radius of the ellipse
-           * @param b vertical radius of the ellipse
-           * @param pattern pattern to use
-           * @param mode  draw mode (see above)
-           */
+     * @brief fills an ellipse
+     *
+     * @param cx x coordinate of the center
+     * @param cy y coordinate of the center
+     * @param a horizontal radius of the ellipse
+     * @param b vertical radius of the ellipse
+     * @param pattern pattern to use
+     * @param mode  draw mode (see above)
+     */
     void fill_ellipse(uint8_t cx, uint8_t cy, uint8_t a, uint8_t b,
                       const pattern_t = pattern_black,
                       Mode mode = pixel_copy);
