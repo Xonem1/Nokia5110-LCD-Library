@@ -19,10 +19,10 @@
 
 #include <stdint.h>
 
-uint32_t isqrt(uint32_t a_nInput) {
-    uint32_t op = a_nInput;
-    uint32_t res = 0;
-    uint32_t one = 1uL << 30; // The second-to-top bit is set: use 1u << 14 for uint16_t type; use 1uL<<30 for uint32_t type
+uint16_t isqrt(uint16_t a_nInput) {
+    uint16_t op = a_nInput;
+    uint16_t res = 0;
+    uint16_t one = 1uL << 14; // The second-to-top bit is set: use 1u << 14 for uint16_t type; use 1uL<<30 for uint32_t type
 
     // "one" starts at the highest power of four <= than the argument.
     while (one > op) {
