@@ -261,7 +261,7 @@ public:
     uint8_t get_byte(uint8_t x, uint8_t y);
 
     /**
-           * @brief prints a 7x5 character to the screen buffer
+           * @brief prints a 7x5 character
            *
            * @param c character to draw
            * @param x x coordinate of upper left (0-83)
@@ -271,7 +271,7 @@ public:
     void print_char(char c, uint8_t x, uint8_t y, Mode mode = pixel_copy);
 
     /**
-           * @brief prints a string to the screen buffer
+           * @brief prints a string
            *
            * @param str string to print
            * @param x x coordinate of upper left (0-83)
@@ -281,7 +281,7 @@ public:
     void print_string(const char *str, uint8_t x, uint8_t y, Mode mode = pixel_copy);
 
     /**
-           * @brief draws a bitmap to the screen buffer in an unpadded format
+           * @brief draws a bitmap in an unpadded format
            *
            * @param bmp pointer to the start of the bitmap
            * @param x x coordinate of upper left (0-83)
@@ -292,7 +292,7 @@ public:
     void draw_bitmap(const uint8_t *bmp, uint8_t x, uint8_t y, uint8_t width, uint8_t height, Mode mode = pixel_copy);
 
     /**
-           * @brief draws a bitmap to the screen buffer in the WBMP format
+           * @brief draws a bitmap in the WBMP format
            *
            * @param wbmp pointer to the start of the bitmap
            * @param x x coordinate of upper left (0-83)
@@ -301,7 +301,7 @@ public:
     void draw_wbitmap(const uint8_t *wbmp, uint8_t x, uint8_t y, Mode mode = pixel_copy);
 
     /**
-          *@brief draws a line to the screen buffer
+          *@brief draws a line
           *
           *@param x0 x coordinate of first point
           *@param y0 y coordinate of first point
@@ -314,7 +314,7 @@ public:
                    Mode mode = pixel_copy);
 
     /**
-          *@brief draws a horizontal line to the screen buffer
+          *@brief draws a horizontal line
           *
           *@param x0 x coordinate of first point
           *@param x1 x coordinate of second point
@@ -326,7 +326,7 @@ public:
                     Mode mode = pixel_copy);
 
     /**
-          *@brief draws a vertical line to the screen buffer
+          *@brief draws a vertical line
           *
           *@param y0 y coordinate of first point
           *@param y1 y coordinate of second point
@@ -338,7 +338,7 @@ public:
                     Mode mode = pixel_copy);
 
     /**
-           * @brief draws a rectangle to the screen buffer
+           * @brief draws an empty rectangle
            *
            * @param x0 column of the first point
            * @param y0 row of the first point
@@ -352,7 +352,7 @@ public:
                    Mode mode = pixel_copy);
 
     /**
-           * @brief fills a rectangle in the screen buffer
+           * @brief fills a rectangle
            *
            * @param x0 column of the first point
            * @param y0 row of the first point
@@ -366,7 +366,7 @@ public:
                    Mode mode = pixel_copy);
 
     /**
-           *@brief draws a circle to the screen buffer
+           *@brief draws an empty circle
            * 
            * @param cx x coordinate of the center
            * @param cy y coordinate of the center
@@ -379,7 +379,7 @@ public:
                      Mode mode = pixel_copy);
 
     /**
-           *@brief fills a circle in the screen buffer
+           *@brief fills a circle
            *
            * @param cx x coordinate of the center
            * @param cy y coordinate of the center
@@ -392,7 +392,7 @@ public:
                      Mode mode = pixel_copy);
 
     /**
-           *@brief draws an ellipse to the screen buffer
+           *@brief draws an empty ellipse
            * 
            * @param cx x coordinate of the center
            * @param cy y coordinate of the center
@@ -406,7 +406,7 @@ public:
                       Mode mode = pixel_copy);
 
     /**
-           *@brief fills an ellipse on the screen buffer
+           *@brief fills an ellipse
            *
            * @param cx x coordinate of the center
            * @param cy y coordinate of the center
