@@ -366,6 +366,36 @@ public:
                    Mode mode = pixel_copy);
 
     /**
+     * @brief draws an empty rounded rectangle
+     *
+     * @param x0 column of first point
+     * @param y0 row of first point
+     * @param x1 column of second point
+     * @param y1 row of second point
+     * @param r radius
+     * @param pattern pattern to use
+     * @param mode  draw mode (see above)
+     */
+    void draw_rrect(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1, uint8_t r,
+                    const pattern_t pattern = pattern_black,
+                    Mode mode = pixel_copy);
+
+    /**
+     * @brief fills a rounded rectangle
+     *
+     * @param x0 column of first point
+     * @param y0 row of first point
+     * @param x1 column of second point
+     * @param y1 row of second point
+     * @param r radius
+     * @param pattern pattern to use
+     * @param mode  draw mode (see above)
+     */
+    void fill_rrect(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1, uint8_t r,
+                    const pattern_t pattern = pattern_black,
+                    Mode mode = pixel_copy);
+
+    /**
      * @brief draws an empty circle
      * 
      * @param cx x coordinate of the center

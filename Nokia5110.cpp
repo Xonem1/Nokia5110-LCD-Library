@@ -341,21 +341,143 @@ void Nokia5110::fill_rect(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1, const 
     }
 }
 
+void Nokia5110::draw_rrect(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1, uint8_t r, const pattern_t pattern, Mode mode) {
+    if (x0 > x1) {
+        uint8_t tmp = x0;
+        x0 = x1;
+        x1 = tmp;
+    }
+
+    if (y0 > y1) {
+        uint8_t tmp = y0;
+        y0 = y1;
+        y1 = tmp;
+    }
+
+    uint8_t cx0 = x0 + r;
+    uint8_t cy0 = y0 + r;
+    uint8_t cx1 = x1 - r;
+    uint8_t cy1 = y1 - r;
+
+    draw_hline(cx0, cx1, y0, pattern, mode);
+    draw_hline(cx0, cx1, y1, pattern, mode);
+    draw_vline(cy0, cy1, x0, pattern, mode);
+    draw_vline(cy0, cy1, x1, pattern, mode);
+
+    uint8_t x = r; // start at the cardinal points of the circle
+    uint8_t y = 1;
+    int8_t dx = 3 - (2 * r);
+    int8_t dy = 1;
+    int8_t err = 1; // difference of true radius squared and expected radius squared
+
+    if (2 + dx > 0) {
+        x--;
+        err += dx;
+        dx += 2;
+    }
+
+    // magic Bresenham voodoo
+    while (x > y) {
+        // draw each octant
+        draw_pixel(cx1 + x, cy1 + y, pattern, mode);
+        draw_pixel(cx1 + x, cy0 - y, pattern, mode);
+        draw_pixel(cx0 - x, cy1 + y, pattern, mode);
+        draw_pixel(cx0 - x, cy0 - y, pattern, mode);
+        draw_pixel(cx1 + y, cy1 + x, pattern, mode);
+        draw_pixel(cx1 + y, cy0 - x, pattern, mode);
+        draw_pixel(cx0 - y, cy1 + x, pattern, mode);
+        draw_pixel(cx0 - y, cy0 - x, pattern, mode);
+
+        y++;
+        err += dy;
+        dy += 2;
+
+        if (2 * err + dx > 0) {
+            x--;
+            err += dx;
+            dx += 2;
+        }
+    }
+
+
+    //draw 45° pixels
+    draw_pixel(cx1 + x, cy1 + y, pattern, mode);
+    draw_pixel(cx0 - x, cy1 + y, pattern, mode);
+    draw_pixel(cx1 + x, cy0 - y, pattern, mode);
+    draw_pixel(cx0 - x, cy0 - y, pattern, mode);
+}
+
+void Nokia5110::fill_rrect(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1, uint8_t r, const pattern_t pattern, Mode mode) {
+    if (x0 > x1) {
+        uint8_t tmp = x0;
+        x0 = x1;
+        x1 = tmp;
+    }
+
+    if (y0 > y1) {
+        uint8_t tmp = y0;
+        y0 = y1;
+        y1 = tmp;
+    }
+
+    uint8_t cx0 = x0 + r;
+    uint8_t cy0 = y0 + r;
+    uint8_t cx1 = x1 - r;
+    uint8_t cy1 = y1 - r;
+
+    fill_rect(cx0, y0, cx1, y1, pattern, mode);
+
+    uint8_t x = r; // start at the cardinal points of the circle
+    uint8_t y = 1;
+    int8_t dx = 3 - (2 * r);
+    int8_t dy = 1;
+    int8_t err = 1; // difference of true radius squared and expected radius squared
+
+    // magic Bresenham voodoo
+    while (x > y) {
+        draw_vline(cy0 - x, cy1 + x, cx1 + y, pattern, mode);
+        draw_vline(cy0 - x, cy1 + x, cx0 - y, pattern, mode);
+
+        y++;
+        err += dy;
+        dy += 2;
+
+        if (2 * err + dx > 0) {
+            x--;
+            err += dx;
+            dx += 2;
+            draw_vline(cy0 - (y - 1), cy1 + (y - 1), cx1 + (x + 1), pattern, mode);
+            draw_vline(cy0 - (y - 1), cy1 + (y - 1), cx0 - (x + 1), pattern, mode);
+        }
+    }
+
+    draw_vline(cy0 - y, cy1 + y, cx1 + x, pattern, mode);
+    draw_vline(cy0 - y, cy1 + y, cx0 - x, pattern, mode);
+}
+
 void Nokia5110::draw_circle(uint8_t cx, uint8_t cy, uint8_t r, const pattern_t pattern, Mode mode) {
     if (!r) { // you cant have a radius of 0, silly
         draw_pixel(cx, cy, pattern, mode);
         return;
     }
 
-    uint8_t x = r; // start at the cardinal points of the circle
-    uint8_t y = 1;
-    int8_t err = 1; // difference of true radius squared and expected radius squared
-
     // draw the pixels in the cardinal directions
     draw_pixel(cx + r, cy, pattern, mode);
     draw_pixel(cx - r, cy, pattern, mode);
     draw_pixel(cx, cy + r, pattern, mode);
     draw_pixel(cx, cy - r, pattern, mode);
+
+    uint8_t x = r; // start at the cardinal points of the circle
+    uint8_t y = 1;
+    int8_t dx = 3 - (2 * r);
+    int8_t dy = 1;
+    int8_t err = 1; // difference of true radius squared and expected radius squared
+
+    if (2 + dx > 0) {
+        x--;
+        err += dx;
+        dx += 2;
+    }
 
     // magic Bresenham voodoo
     while (x > y) {
@@ -369,15 +491,14 @@ void Nokia5110::draw_circle(uint8_t cx, uint8_t cy, uint8_t r, const pattern_t p
         draw_pixel(cx - y, cy + x, pattern, mode);
         draw_pixel(cx - y, cy - x, pattern, mode);
 
-        // go inward diagonally
-        x--;
         y++;
-        err -= x - y;
+        err += dy;
+        dy += 2;
 
-        // if we are inside the circle, increment x
-        if (err < 0) {
-            err += x;
-            x++;
+        if (2 * err + dx > 0) {
+            x--;
+            err += dx;
+            dx += 2;
         }
     }
 
@@ -394,29 +515,34 @@ void Nokia5110::fill_circle(uint8_t cx, uint8_t cy, uint8_t r, const uint8_t *pa
         return;
     }
 
-    uint8_t x = r; // start at the cardinal points of the circle
-    uint8_t y = 0;
-    int8_t err = 0; // difference of true radius squared and expected radius squared
-
     draw_vline(cy - r, cy + r, cx, pattern, mode);
+
+    uint8_t x = r; // start at the cardinal points of the circle
+    uint8_t y = 1;
+    int8_t dx = 3 - (2 * r);
+    int8_t dy = 1;
+    int8_t err = 1; // difference of true radius squared and expected radius squared
+
     // magic Bresenham voodoo
     while (x > y) {
-        // go inward diagonally
-        x--;
-        y++;
-        err -= x - y;
+        draw_vline(cy - x, cy + x, cx + y, pattern, mode);
+        draw_vline(cy - x, cy + x, cx - y, pattern, mode);
 
-        // if we are inside the circle, increment x
-        if (err < 0) {
-            err += x;
-            x++;
-        } else {
+        y++;
+        err += dy;
+        dy += 2;
+
+        if (2 * err + dx > 0) {
+            x--;
+            err += dx;
+            dx += 2;
             draw_vline(cy - (y - 1), cy + (y - 1), cx + (x + 1), pattern, mode);
             draw_vline(cy - (y - 1), cy + (y - 1), cx - (x + 1), pattern, mode);
         }
-        draw_vline(cy - x, cy + x, cx + y, pattern, mode);
-        draw_vline(cy - x, cy + x, cx - y, pattern, mode);
     }
+
+    draw_vline(cy - y, cy + y, cx + x, pattern, mode);
+    draw_vline(cy - y, cy + y, cx - x, pattern, mode);
 }
 
 void Nokia5110::draw_ellipse(uint8_t cx, uint8_t cy, uint8_t a, uint8_t b, const pattern_t pattern, Mode mode) {
