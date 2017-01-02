@@ -1,8 +1,6 @@
 #include "Nokia5110.h"
 #include "isqrt.h"
 
-// the memory buffer for the LCD
-uint8_t buffer[LCD_BYTES];
 
 Nokia5110::Nokia5110(PinName sce, PinName rst, PinName dc, PinName dn, PinName sclk) {
     _lcd_SPI = new SPI(dn, NC, sclk);
@@ -96,7 +94,7 @@ void Nokia5110::set_cursor(uint8_t col, uint8_t bank) {
 
 void Nokia5110::clear_buffer() {
     for (unsigned int i = 0; i < LCD_BYTES; i++) {
-        buffer[i] = 0x00;
+        _buffer[i] = 0x00;
     }
 }
 
@@ -104,7 +102,7 @@ void Nokia5110::display() {
     set_bank(0);
     set_column(0);
     for (unsigned int i = 0; i < LCD_BYTES; i++) {
-        send_data(buffer[i]);
+        send_data(_buffer[i]);
     }
 }
 
@@ -131,13 +129,13 @@ void Nokia5110::draw_pixel(uint8_t x, uint8_t y, bool value, Mode mode) {
         switch (mode) {
         default:
         case pixel_or:
-            buffer[x + (y / 8) * LCD_WIDTH] |= (1 << (y % 8));
+            _buffer[x + (y / 8) * LCD_WIDTH] |= (1 << (y % 8));
             break;
         case pixel_xor:
-            buffer[x + (y / 8) * LCD_WIDTH] ^= (1 << (y % 8));
+            _buffer[x + (y / 8) * LCD_WIDTH] ^= (1 << (y % 8));
             break;
         case pixel_clr:
-            buffer[x + (y / 8) * LCD_WIDTH] &= ~(1 << (y % 8));
+            _buffer[x + (y / 8) * LCD_WIDTH] &= ~(1 << (y % 8));
             break;
         }
     }
@@ -147,21 +145,21 @@ uint8_t Nokia5110::get_pixel(uint8_t x, uint8_t y) {
     x %= LCD_WIDTH;
     y %= LCD_HEIGHT;
 
-    return buffer[x + (y / 8) * LCD_WIDTH] & (1 << (y % 8));
+    return _buffer[x + (y / 8) * LCD_WIDTH] & (1 << (y % 8));
 }
 
 void Nokia5110::draw_byte(uint8_t col, uint8_t bank, uint8_t byte) {
     col %= LCD_WIDTH;
     bank %= LCD_BANKS;
 
-    buffer[col + bank * LCD_WIDTH] = byte;
+    _buffer[col + bank * LCD_WIDTH] = byte;
 }
 
 uint8_t Nokia5110::get_byte(uint8_t col, uint8_t bank) {
     col %= LCD_WIDTH;
     bank %= LCD_BANKS;
 
-    return buffer[col + bank * LCD_WIDTH];
+    return _buffer[col + bank * LCD_WIDTH];
 }
 
 void Nokia5110::print_char(char c, uint8_t x, uint8_t y, Mode mode) {

@@ -410,6 +410,7 @@ private:
     DigitalOut *_rst;
     DigitalOut *_dc;
 
+    uint8_t _buffer[LCD_BYTES];
     static const uint8_t font[480];
 };
 
