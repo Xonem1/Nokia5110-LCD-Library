@@ -31,5 +31,5 @@
      - pip install -U platformio
 
  script:
-     -  platformio ci -l src/Nokia5110.h -l src/Nokia5110.cpp -l src/isqrt.h -b nrf51_mkit
+     - platformio ci -l src/Nokia5110.h -l src/Nokia5110.cpp -l src/isqrt.h -b nrf51_mkit
 
