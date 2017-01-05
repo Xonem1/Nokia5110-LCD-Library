@@ -61,3 +61,4 @@ html
 .make
 cmake-build-debug
 build
+build.sh
