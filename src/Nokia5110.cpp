@@ -195,7 +195,7 @@ void Nokia5110::print_string(const char *str, uint8_t x, uint8_t y, Mode mode) {
     x %= LCD_WIDTH;
     y %= LCD_HEIGHT;
 
-    while (*str && x + 6 < LCD_WIDTH) {
+    while (*str && x + 6 <= LCD_WIDTH) {
         print_char(*str, x, y, mode);
         x += 6;
         str++;

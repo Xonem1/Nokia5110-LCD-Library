@@ -26,6 +26,7 @@
 
  env:
      - PLATFORMIO_CI_SRC=examples/primitives.cpp
+     - PLATFORMIO_CI_SRC=examples/text.cpp
 
  install:
      - pip install -U platformio
