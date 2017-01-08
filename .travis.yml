@@ -28,6 +28,7 @@
      - PLATFORMIO_CI_SRC=examples/primitives.cpp
      - PLATFORMIO_CI_SRC=examples/text.cpp
      - PLATFORMIO_CI_SRC=examples/bitmap.cpp
+     - PLATFORMIO_CI_SRC=examples/contrast.cpp
 
  install:
      - pip install -U platformio
