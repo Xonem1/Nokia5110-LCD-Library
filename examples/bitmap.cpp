@@ -1,4 +1,5 @@
-#include "Nokia5110.h"
+#include <mbed.h>
+#include <Nokia5110.h>
 
 uint8_t dog1[51] = {
     0x5E, 0x80, 0x00,
@@ -21,10 +22,9 @@ uint8_t dog1[51] = {
 };
 
 int main() {
-    Nokia_5110 lcd(NC, D0, D1, D2, D3);
-    lcd.init(0x40, 4);
-    lcd.clearBuffer();
-    lcd.drawBitmap(dog1, 5, 5, 24, 17);
-
-    lcd.display();
+    Nokia5110 display(p4, p3, p5, p6, p7);
+    display.init(0x2C);
+    display.clear_buffer();
+    display.draw_bitmap(dog1, 5, 5, 24, 17);
+    display.display();
 }

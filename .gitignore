@@ -38,13 +38,11 @@
 *.bin
 *.map
 
-## MBed
-mbed_settings.py
-mbed_settings.pyc
-BUILD
-.mbed
-
-upload.tar.gz
+## Platformio
+.pioenvs
+.piolibdeps
+CMakeLists.txt
+CMakeListsPrivate.txt
 
 ## Doxygen
 html
@@ -55,3 +53,13 @@ html
 
 ## VS Code
 .vscode
+
+## CLion
+.idea
+
+## CMake
+.cmake
+.make
+cmake-build-debug
+build
+build.sh
