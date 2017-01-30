@@ -1,65 +1,10 @@
-## OS
-# Mac OS
+## macOS
 .[Dd][Ss]_[Ss]store
-
-## C++
-# Compiled Object files
-*.slo
-*.lo
-*.o
-*.obj
-
-# Precompiled Headers
-*.gch
-*.pch
-
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
-
-# Fortran module files
-*.mod
-
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
-
-# Executables
-*.exe
-*.out
-*.app
-
-## ARM
-# Executables
-*.hex
-*.bin
-*.map
-
-## Platformio
-.pioenvs
-.piolibdeps
-CMakeLists.txt
-CMakeListsPrivate.txt
 
 ## Doxygen
 html
 
-## Sublime
-*.sublime-workspace
-*.sublime-project
-
-## VS Code
-.vscode
-
-## CLion
-.idea
-
 ## CMake
-.cmake
-.make
+CMakeLists.txt
+CMakeListsPrivate.txt
 cmake-build-debug
-build
-build.sh

@@ -11,7 +11,7 @@ smartwatches and other small hobby electronics
 - `Doxyfile`: Doxygen config file
 
 ###Usage
-See the examples readme for more info. The library is written for use with the mbed OS framework, but could easily be
+See the [examples readme](https://github.com/drewcassidy/Nokia5110-LCD/blob/master/examples/README.md) for more info. The library is written for use with the mbed OS framework, but could easily be
 modified for use with other platforms and frameworks. So far only tested with the NRF51822 chip. 
 
 The display can be purchased on a breakout from [sparkfun](https://www.sparkfun.com/products/10168),

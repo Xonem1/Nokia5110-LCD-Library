@@ -276,9 +276,13 @@ public:
      * @param str string to print
      * @param x x coordinate of upper left (0-83)
      * @param y y coordinate of upper left (0-47)
+     * @param chars maximum number of chars to print.
+     *        -1 = no limit. stops at null byte
      * @param mode  draw mode (see above)
+     *
+     * @return last column drawn to (for printing another string)
      */
-    void print_string(const char *str, uint8_t x, uint8_t y, Mode mode = pixel_copy);
+    uint8_t print_string(const char *str, uint8_t x, uint8_t y, int8_t chars = -1, Mode mode = pixel_copy);
 
     /**
      * @brief draws a bitmap in an unpadded format
