@@ -178,7 +178,7 @@ uint8_t Nokia5110::get_byte(uint8_t col, uint8_t bank) {
     return _buffer[col + bank * LCD_WIDTH];
 }
 
-void Nokia5110::print_char(char c, uint8_t x, uint8_t y, Mode mode) {
+uint8_t Nokia5110::print_char(char c, uint8_t x, uint8_t y, Mode mode) {
     x %= LCD_WIDTH;
     y %= LCD_HEIGHT;
 
@@ -189,6 +189,8 @@ void Nokia5110::print_char(char c, uint8_t x, uint8_t y, Mode mode) {
             draw_pixel(x + i, y + b, font[(5 * c) + i] & (1 << b), mode);
         }
     }
+
+    return x + 6;
 }
 
 uint8_t Nokia5110::print_string(const char *str, uint8_t x, uint8_t y, int8_t chars, Mode mode) {
@@ -196,8 +198,7 @@ uint8_t Nokia5110::print_string(const char *str, uint8_t x, uint8_t y, int8_t ch
     y %= LCD_HEIGHT;
 
     while (*str && x + 6 <= LCD_WIDTH && chars-- != 0) {
-        print_char(*str, x, y, mode);
-        x += 6;
+        x = print_char(*str, x, y, mode);
         str++;
     }
 
