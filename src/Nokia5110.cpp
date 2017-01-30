@@ -178,7 +178,7 @@ uint8_t Nokia5110::get_byte(uint8_t col, uint8_t bank) {
     return _buffer[col + bank * LCD_WIDTH];
 }
 
-void Nokia5110::print_char(char c, uint8_t x, uint8_t y, Mode mode) {
+uint8_t Nokia5110::print_char(char c, uint8_t x, uint8_t y, Mode mode) {
     x %= LCD_WIDTH;
     y %= LCD_HEIGHT;
 
