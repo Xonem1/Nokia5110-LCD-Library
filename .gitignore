@@ -8,3 +8,7 @@ html
 CMakeLists.txt
 CMakeListsPrivate.txt
 cmake-build-debug
+
+lib/readme.txt
+
+.pioenvs
