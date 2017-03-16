@@ -1,16 +1,16 @@
 # Nokia5110-lcd  
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![Build Status](https://travis-ci.org/drewcassidy/Nokia5110-LCD.svg?branch=master)](https://travis-ci.org/drewcassidy/Nokia5110-LCD)
+[![Build Status](https://travis-ci.org/drewcassidy/Nokia5110-LCD-Library.svg?branch=master)](https://travis-ci.org/drewcassidy/Nokia5110-LCD-Library)
 
 This is a library for the LCD in the Nokia 5110/3310 cell phones. The LCD is a 48x84 black and white display, useful for
 smartwatches and other small hobby electronics
 
-###Files
+### Files
 - `src/`: source files
 - `examples/`: example usage files
 - `Doxyfile`: Doxygen config file
 
-###Usage
+### Usage
 See the [examples readme](https://github.com/drewcassidy/Nokia5110-LCD/blob/master/examples/README.md) for more info. The library is written for use with the mbed OS framework, but could easily be
 modified for use with other platforms and frameworks. So far only tested with the NRF51822 chip. 
 
