@@ -1,0 +1,26 @@
+{
+    "name": "Nokia-5110-lcd",
+    "keywords": "Nokia, 5110, 3310, lcd, SPI, mbed, display",
+    "description": "nokia 5110/3310 lcd driver for mbed OS",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/drewcassidy/Nokia5110-LCD-Library.git"
+    },
+    "version": "1.0.2",
+    "authors": [
+        {
+            "name": "Andrew Cassidy",
+            "email": "drewcassidy@gmail.com",
+            "url": "https://twitter.com/AndrewNCassidy",
+            "maintainer": true
+        }
+    ],
+    "frameworks": "mbed",
+    "platforms": "*",
+    "examples": [
+        "[Ee]xamples/bitmap.cpp",
+        "[Ee]xamples/contrast.cpp",
+        "[Ee]xamples/primitives.cpp",
+        "[Ee]xamples/text.cpp"
+    ]
+}
